@@ -105,6 +105,7 @@ void MainWindow::deleteInstance(void)
 /// @brief Private constructor for MainWindow. MainWindow singleton is only ever created
 ///         by MainWindow::_create method. Hence no other code should have access to
 ///         constructor.
+/// @brief MainWindow的私有构造函数。MainWindow singleton只能通过MainWindow::_create方法创建。因此，其他代码不应该访问构造函数。
 MainWindow::MainWindow()
     : _mavlinkDecoder       (nullptr)
     , _lowPowerMode         (false)
@@ -139,6 +140,7 @@ MainWindow::MainWindow()
     centralWidget()->setLayout(_centralLayout);
 
     //-- Allow plugin to initialize main QML Widget
+    //允许插件初始化主QML小部件
     _mainQmlWidgetHolder = qgcApp()->toolbox()->corePlugin()->createMainQmlWidgetHolder(_centralLayout, this);
 
     // Image provider

@@ -273,6 +273,7 @@ int main(int argc, char *argv[])
 #ifdef __android__
         checkAndroidWritePermission();
 #endif
+/// 初始化应用程序以使应用程序正常启动。换句话说，我们不会运行单元测试。尽管public只能由main调用。
         if (!app->_initForNormalAppBoot()) {
             return -1;
         }

@@ -291,6 +291,7 @@ QQmlApplicationEngine* QGCCorePlugin::createRootWindow(QObject *parent)
     pEngine->addImportPath("qrc:/qml");
     pEngine->rootContext()->setContextProperty("joystickManager", qgcApp()->toolbox()->joystickManager());
     pEngine->rootContext()->setContextProperty("debugMessageModel", AppMessages::getModel());
+    //这里开始加载qml
     pEngine->load(QUrl(QStringLiteral("qrc:/qml/MainWindowNative.qml")));
     return pEngine;
 }
@@ -338,6 +339,7 @@ QGCQmlWidgetHolder* QGCCorePlugin::createMainQmlWidgetHolder(QLayout *mainLayout
     QQmlEngine::setObjectOwnership(parent, QQmlEngine::CppOwnership);
     pMainQmlWidgetHolder->setContextPropertyObject("controller", parent);
     pMainQmlWidgetHolder->setContextPropertyObject("debugMessageModel", AppMessages::getModel());
+    //这里开始加载qml
     pMainQmlWidgetHolder->setSource(QUrl::fromUserInput("qrc:qml/MainWindowHybrid.qml"));
     return pMainQmlWidgetHolder;
 }

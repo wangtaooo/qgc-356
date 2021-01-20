@@ -135,6 +135,7 @@ public:
 
     /// @brief Initialize the application for normal application boot. Or in other words we are not going to run
     ///         unit tests. Although public should only be called by main.
+    /// 初始化应用程序以使应用程序正常启动。换句话说，我们不会运行单元测试。尽管public只能由main调用。
     bool _initForNormalAppBoot(void);
 
     /// @brief Initialize the application for normal application boot. Or in other words we are not going to run

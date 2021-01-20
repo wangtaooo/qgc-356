@@ -106,6 +106,7 @@ public:
     virtual void valuesWidgetDefaultSettings(QStringList& largeValues, QStringList& smallValues);
 
     /// Allows the plugin to override the creation of the root (native) window.
+    /// 允许插件覆盖根(本地)窗口的创建
     virtual QQmlApplicationEngine* createRootWindow(QObject* parent);
 
     /// Allows the plugin to have a chance to initialize the creation of the root (non native) window.

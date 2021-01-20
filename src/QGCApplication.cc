@@ -466,7 +466,7 @@ void QGCApplication::_initCommon(void)
     qmlRegisterSingletonType<ScreenToolsController>     ("QGroundControl.ScreenToolsController",    1, 0, "ScreenToolsController",  screenToolsControllerSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("QGroundControl.ShapeFileHelper",          1, 0, "ShapeFileHelper",        shapeFileHelperSingletonFactory);
 }
-
+/// 初始化应用程序以使应用程序正常启动。换句话说，我们不会运行单元测试。尽管public只能由main调用。
 bool QGCApplication::_initForNormalAppBoot(void)
 {
     QSettings settings;
