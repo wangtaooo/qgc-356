@@ -301,7 +301,7 @@ QGCView {
         //-- Map View
         //   For whatever reason, if FlightDisplayViewMap is the _panel item, changing
         //   width/height has no effect.
-        Item {
+/*        Item {
             id: _flightMapContainer
             z:  _mainIsMap ? _panel.z + 1 : _panel.z + 2
             anchors.left:   _panel.left
@@ -337,7 +337,7 @@ QGCView {
                 scaleState:                 (_mainIsMap && flyViewOverlay.item) ? (flyViewOverlay.item.scaleState ? flyViewOverlay.item.scaleState : "bottomMode") : "bottomMode"
             }
         }
-
+*/
         //-- Video View
         Item {
             id:             _flightVideo
