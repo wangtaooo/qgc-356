@@ -351,7 +351,7 @@ Item {
 
         property var toolbar: planToolBar
     }
-
+/*
     FlightDisplayView {
         id:                 flightView
         anchors.fill:       parent
@@ -364,7 +364,7 @@ Item {
             anchors.centerIn: parent
         }
     }
-
+*/
     Loader {
         id:                 analyzeViewLoader
         anchors.left:       parent.left
