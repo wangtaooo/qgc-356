@@ -34,15 +34,16 @@ Item {
     property bool   _hasZoom:           _camera && _camera.hasZoom
     property int    _fitMode:           QGroundControl.settingsManager.videoSettings.videoFit.rawValue
     Rectangle {
-        id:             noVideo
+        id:             noVideo_external
         anchors.fill:   parent
         color:          Qt.rgba(0,0,0,0.75)
         visible:        !(_videoReceiver && _videoReceiver.videoRunning)
         QGCLabel {
-            text:               QGroundControl.settingsManager.videoSettings.streamEnabled.rawValue ? qsTr("WAITING FOR VIDEO") : qsTr("VIDEO DISABLED")
+            text:               QGroundControl.settingsManager.videoSettings.streamEnabled.rawValue ? qsTr("WAITING FOR VIDEO-EXTERNAL") : qsTr("VIDEO DISABLED")
             font.family:        ScreenTools.demiboldFontFamily
-            color:              "white"
-            font.pointSize:     _mainIsMap ? ScreenTools.smallFontPointSize : ScreenTools.largeFontPointSize
+            color:              "blue"
+//            font.pointSize:     _mainIsMap ? ScreenTools.smallFontPointSize : ScreenTools.largeFontPointSize
+            font.pointSize:     _mainIsMap ? 20 : 60
             anchors.centerIn:   parent
         }
         MouseArea {

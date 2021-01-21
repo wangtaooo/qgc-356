@@ -370,8 +370,8 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
        connect(gpsManager, &GPSManager::satelliteUpdate,    this, &QGCApplication::_gpsNumSatellites);
    }
 #endif /* __mobile__ */
-
-    _checkForNewVersion();
+        //检查是否可以更新
+//    _checkForNewVersion();
 }
 
 void QGCApplication::_shutdown(void)
