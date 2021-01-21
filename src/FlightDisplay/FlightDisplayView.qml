@@ -429,10 +429,23 @@ QGCView {
                 }
             ]
             //-- Video Streaming
+            //默认的视频预览框
             FlightDisplayViewVideo {
                 id:             videoStreaming
                 anchors.fill:   parent
                 visible:        QGroundControl.videoManager.isGStreamer
+            }
+            //添加机库内视频预览框
+            FlightDisplayViewVideo_internal {
+                id:             videoStreaming_internal
+                anchors.fill:   parent
+                visible:        true
+            }
+            //添加机库外视频预览框
+            FlightDisplayViewVideo_external {
+                id:             videoStreaming_external
+                anchors.fill:   parent
+                visible:        true
             }
             //-- UVC Video (USB Camera or Video Device)
             Loader {

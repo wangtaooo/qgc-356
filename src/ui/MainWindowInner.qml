@@ -351,7 +351,7 @@ Item {
 
         property var toolbar: planToolBar
     }
-/*
+
     //加载飞行显示界面
     FlightDisplayView {
         id:                 flightView
@@ -365,7 +365,7 @@ Item {
             anchors.centerIn: parent
         }
     }
-*/
+
     Loader {
         id:                 analyzeViewLoader
         anchors.left:       parent.left
