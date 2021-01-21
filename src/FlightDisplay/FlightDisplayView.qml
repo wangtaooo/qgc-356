@@ -70,20 +70,24 @@ QGCView {
 
     function setStates() {
         QGroundControl.saveBoolGlobalSetting(_mainIsMapKey, _mainIsMap)
-        if(_mainIsMap) {
+        if(_mainIsMap) {//主屏显示地图
             //-- Adjust Margins
-            _flightMapContainer.state   = "fullMode"
-            _flightVideo.state          = "pipMode"
+            //调整间隔
+            _flightMapContainer.state   = "fullMode"//地图设置为全屏
+            _flightVideo.state          = "pipMode"//视频设置为小窗
             //-- Save/Restore Map Zoom Level
+            //保存/恢复地图缩放级别
             if(_savedZoomLevel != 0)
                 _flightMap.zoomLevel = _savedZoomLevel
             else
                 _savedZoomLevel = _flightMap.zoomLevel
         } else {
             //-- Adjust Margins
-            _flightMapContainer.state   = "pipMode"
-            _flightVideo.state          = "fullMode"
+            //调整间隔
+            _flightMapContainer.state   = "pipMode"//地图设置为小窗
+            _flightVideo.state          = "fullMode"//视频设置为全屏
             //-- Set Map Zoom Level
+            //设置地图缩放等级
             _savedZoomLevel = _flightMap.zoomLevel
             _flightMap.zoomLevel = _savedZoomLevel - 3
         }
@@ -285,6 +289,7 @@ QGCView {
       repeat: false
       onTriggered: {
           // If state is popup, the next one will be popup-finished
+          //如果state是popup，下一个将是popup-finished
           if (_flightVideo.state ==  "popup") {
             _flightVideo.state = "popup-finished"
           }
@@ -301,10 +306,10 @@ QGCView {
         //-- Map View
         //   For whatever reason, if FlightDisplayViewMap is the _panel item, changing
         //   width/height has no effect.
-/*        Item {
+        Item {
             id: _flightMapContainer
             z:  _mainIsMap ? _panel.z + 1 : _panel.z + 2
-            anchors.left:   _panel.left
+            anchors.right:   _panel.right
             anchors.bottom: _panel.bottom
             visible:        _mainIsMap || _isPipVisible && !QGroundControl.videoManager.fullScreen
             width:          _mainIsMap ? _panel.width  : _pipSize
@@ -337,8 +342,9 @@ QGCView {
                 scaleState:                 (_mainIsMap && flyViewOverlay.item) ? (flyViewOverlay.item.scaleState ? flyViewOverlay.item.scaleState : "bottomMode") : "bottomMode"
             }
         }
-*/
+
         //-- Video View
+        //视频预览小框
         Item {
             id:             _flightVideo
             z:              _mainIsMap ? _panel.z + 2 : _panel.z + 1
@@ -346,7 +352,9 @@ QGCView {
             height:         !_mainIsMap ? _panel.height : _pipSize * (9/16)
             anchors.left:   _panel.left
             anchors.bottom: _panel.bottom
+            //如果有视频，并且 主界面不是地图或pip可见
             visible:        QGroundControl.videoManager.hasVideo && (!_mainIsMap || _isPipVisible)
+//            visible:        true
 
             onParentChanged: {
                 /* If video comes back from popup
@@ -435,7 +443,7 @@ QGCView {
                 anchors.fill:   parent
                 visible:        QGroundControl.videoManager.isGStreamer
             }
-            //添加机库内视频预览框
+/*            //添加机库内视频预览框
             FlightDisplayViewVideo_internal {
                 id:             videoStreaming_internal
                 anchors.fill:   parent
@@ -447,6 +455,7 @@ QGCView {
                 anchors.fill:   parent
                 visible:        true
             }
+*/
             //-- UVC Video (USB Camera or Video Device)
             Loader {
                 id:             cameraLoader
@@ -455,7 +464,249 @@ QGCView {
                 source:         QGroundControl.videoManager.uvcEnabled ? "qrc:/qml/FlightDisplayViewUVC.qml" : "qrc:/qml/FlightDisplayViewDummy.qml"
             }
         }
+        //-- Video View Internal------------------------------------------------------------------------------------------------------------------
+        //视频预览小框
+        Item {
+            id:             _flightVideoInternal
+            z:              _mainIsMap ? _panel.z + 2 : _panel.z + 1
+            width:          !_mainIsMap ? _panel.width  : _pipSize
+            height:         !_mainIsMap ? _panel.height : _pipSize * (9/16)
+            anchors.right:   _panel.right
+            anchors.top:  _panel.top
+            //如果有视频，并且 主界面不是地图或pip可见
+//            visible:        QGroundControl.videoManager.hasVideo && (!_mainIsMap || _isPipVisible)
+            visible:        true
 
+//            onParentChanged: {
+                /* If video comes back from popup
+                 * correct anchors.
+                 * Such thing is not possible with ParentChange.
+                 */
+//                if(parent == _panel) {
+//                    // Do anchors again after popup
+//                    anchors.left =       _panel.left
+//                    anchors.bottom =     _panel.bottom
+//                    anchors.margins =    ScreenTools.defaultFontPixelHeight
+//                }
+//            }
+//
+//            states: [
+//                State {
+//                    name:   "pipMode"
+//                    PropertyChanges {
+//                        target: _flightVideo
+//                        anchors.margins: ScreenTools.defaultFontPixelHeight
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                },
+//                State {
+//                    name:   "fullMode"
+//                    PropertyChanges {
+//                        target: _flightVideo
+//                        anchors.margins:    0
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                },
+//                State {
+//                    name: "popup"
+//                    StateChangeScript {
+//                        script: {
+//                            // Stop video, restart it again with Timer
+//                            // Avoiding crashs if ParentChange is not yet done
+//                            QGroundControl.videoManager.stopVideo()
+//                            videoPopUpTimer.running = true
+//                        }
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: true
+//                    }
+//                },
+//                State {
+//                    name: "popup-finished"
+//                    ParentChange {
+//                        target: _flightVideo
+//                        parent: videoItem
+//                        x: 0
+//                        y: 0
+//                        width: videoItem.width
+//                        height: videoItem.height
+//                    }
+//                },
+//                State {
+//                    name: "unpopup"
+//                    StateChangeScript {
+//                        script: {
+//                            QGroundControl.videoManager.stopVideo()
+//                            videoPopUpTimer.running = true
+//                        }
+//                    }
+//                    ParentChange {
+//                        target: _flightVideo
+//                        parent: _panel
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                }
+//            ]
+//            //-- Video Streaming
+//            //默认的视频预览框
+/*            FlightDisplayViewVideo {
+                id:             videoStreaming
+                anchors.fill:   parent
+                visible:        QGroundControl.videoManager.isGStreamer
+            }
+*/           //添加机库内视频预览框
+            FlightDisplayViewVideo_internal {
+                id:             videoStreaming_internal
+                anchors.fill:   parent
+                visible:        true
+            }
+            //添加机库外视频预览框
+/*            FlightDisplayViewVideo_external {
+                id:             videoStreaming_external
+                anchors.fill:   parent
+                visible:        true
+            }
+*/
+            //-- UVC Video (USB Camera or Video Device)
+//            Loader {
+//                id:             cameraLoader
+//                anchors.fill:   parent
+//                visible:        !QGroundControl.videoManager.isGStreamer
+//                source:         QGroundControl.videoManager.uvcEnabled ? "qrc:/qml/FlightDisplayViewUVC.qml" : "qrc:/qml/FlightDisplayViewDummy.qml"
+//            }
+        }
+        //-- Video View External------------------------------------------------------------------------------------------------------------------
+        //视频预览小框
+        Item {
+            id:             _flightVideoExternal
+            z:              _mainIsMap ? _panel.z + 2 : _panel.z + 1
+            width:          !_mainIsMap ? _panel.width  : _pipSize
+            height:         !_mainIsMap ? _panel.height : _pipSize * (9/16)
+            anchors.right:   _panel.right
+            anchors.bottom: _panel.bottom
+//            //如果有视频，并且 主界面不是地图或pip可见
+//            visible:        QGroundControl.videoManager.hasVideo && (!_mainIsMap || _isPipVisible)
+            visible:        true
+//
+//            onParentChanged: {
+                /* If video comes back from popup
+                 * correct anchors.
+                 * Such thing is not possible with ParentChange.
+                 */
+//                if(parent == _panel) {
+//                    // Do anchors again after popup
+//                    anchors.left =       _panel.left
+//                    anchors.bottom =     _panel.bottom
+//                    anchors.margins =    ScreenTools.defaultFontPixelHeight
+//                }
+//            }
+//
+//            states: [
+//                State {
+//                    name:   "pipMode"
+//                    PropertyChanges {
+//                        target: _flightVideo
+//                        anchors.margins: ScreenTools.defaultFontPixelHeight
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                },
+//                State {
+//                    name:   "fullMode"
+//                    PropertyChanges {
+//                        target: _flightVideo
+//                        anchors.margins:    0
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                },
+//                State {
+//                    name: "popup"
+//                    StateChangeScript {
+//                        script: {
+//                            // Stop video, restart it again with Timer
+//                            // Avoiding crashs if ParentChange is not yet done
+//                            QGroundControl.videoManager.stopVideo()
+//                            videoPopUpTimer.running = true
+//                        }
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: true
+//                    }
+//                },
+//                State {
+//                    name: "popup-finished"
+//                    ParentChange {
+//                        target: _flightVideo
+//                        parent: videoItem
+//                        x: 0
+//                        y: 0
+//                        width: videoItem.width
+//                        height: videoItem.height
+//                    }
+//                },
+//                State {
+//                    name: "unpopup"
+//                    StateChangeScript {
+//                        script: {
+//                            QGroundControl.videoManager.stopVideo()
+//                            videoPopUpTimer.running = true
+//                        }
+//                    }
+//                    ParentChange {
+//                        target: _flightVideo
+//                        parent: _panel
+//                    }
+//                    PropertyChanges {
+//                        target: _flightVideoPipControl
+//                        inPopup: false
+//                    }
+//                }
+//            ]
+            //-- Video Streaming
+            //默认的视频预览框
+/*             FlightDisplayViewVideo {
+                id:             videoStreaming
+                anchors.fill:   parent
+                visible:        QGroundControl.videoManager.isGStreamer
+            }
+           //添加机库内视频预览框
+            FlightDisplayViewVideo_internal {
+                id:             videoStreaming_internal
+                anchors.fill:   parent
+                visible:        true
+            }
+*/            //添加机库外视频预览框
+            FlightDisplayViewVideo_external {
+                id:             videoStreaming_external
+                anchors.fill:   parent
+                visible:        true
+            }
+//
+//            //-- UVC Video (USB Camera or Video Device)
+//            Loader {
+//                id:             cameraLoader
+//                anchors.fill:   parent
+//                visible:        !QGroundControl.videoManager.isGStreamer
+//                source:         QGroundControl.videoManager.uvcEnabled ? "qrc:/qml/FlightDisplayViewUVC.qml" : "qrc:/qml/FlightDisplayViewDummy.qml"
+//            }
+        }
+        //加载新的qml
         QGCPipable {
             id:                 _flightVideoPipControl
             z:                  _flightVideo.z + 3
@@ -464,11 +715,14 @@ QGCView {
             anchors.left:       _panel.left
             anchors.bottom:     _panel.bottom
             anchors.margins:    ScreenTools.defaultFontPixelHeight
+            //
             visible:            QGroundControl.videoManager.hasVideo && !QGroundControl.videoManager.fullScreen && _flightVideo.state != "popup"
+//            visible:            false
             isHidden:           !_isPipVisible
             isDark:             isBackgroundDark
             enablePopup:        _mainIsMap
             onActivated: {
+                //修改是否为全屏地图的标志位
                 _mainIsMap = !_mainIsMap
                 setStates()
             }

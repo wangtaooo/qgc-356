@@ -84,7 +84,7 @@ QString QGroundControlQmlGlobal::loadGlobalSetting (const QString& key, const QS
     settings.beginGroup(kQmlGlobalKeyName);
     return settings.value(key, defaultValue).toString();
 }
-
+//用来保存全局变量的设置值
 void QGroundControlQmlGlobal::saveBoolGlobalSetting (const QString& key, bool value)
 {
     QSettings settings;

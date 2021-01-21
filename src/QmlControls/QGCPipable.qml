@@ -23,6 +23,7 @@ Item {
     property bool isDark:    false
 
     // As a percentage of the window width
+    //作为窗口宽度的百分比
     property real maxSize: 0.75
     property real minSize: 0.10
 
@@ -30,7 +31,7 @@ Item {
     property bool enablePopup: true
 
     signal  activated()
-    signal  hideIt(bool state)
+    signal  hideIt(bool state)//点击的信号
     signal  newWidth(real newWidth)
     signal  popup()
 
@@ -45,6 +46,7 @@ Item {
     }
 
     // MouseArea to drag in order to resize the PiP area
+    //鼠标区域拖动以调整PiP区域的大小
     MouseArea {
         id: pipResize
         anchors.top: parent.top
@@ -59,14 +61,16 @@ Item {
         }
 
         // When we push the mouse button down, we un-anchor the mouse area to prevent a resizing loop
+        //当我们按下鼠标按钮时，我们将取消鼠标区域的锚定，以防止重新调整大小的循环
         onPressed: {
-            pipResize.anchors.top = undefined // Top doesn't seem to 'detach'
-            pipResize.anchors.right = undefined // This one works right, which is what we really need
+            pipResize.anchors.top = undefined // Top doesn't seem to 'detach' 
+            pipResize.anchors.right = undefined // This one works right, which is what we really need 这台运转正常，这才是我们真正需要的
             pipResize.initialX = mouse.x
             pipResize.initialWidth = pip.width
         }
 
         // When we let go of the mouse button, we re-anchor the mouse area in the correct position
+        //当我们松开鼠标按钮时，我们将鼠标区域重新锚定在正确的位置
         onReleased: {
             pipResize.anchors.top = pip.top
             pipResize.anchors.right = pip.right
@@ -85,7 +89,8 @@ Item {
     }
 
     // Resize icon
-    Image {
+    //缩放窗口的图标
+/*    Image {
         source:         "/qmlimages/pipResize.svg"
         fillMode:       Image.PreserveAspectFit
         mipmap: true
@@ -96,7 +101,7 @@ Item {
         width:          ScreenTools.defaultFontPixelHeight * 2.5
         sourceSize.height:  height
     }
-
+*/
     // Resize pip window if necessary when main window is resized
     property int pipLock: 2
 
@@ -121,7 +126,8 @@ Item {
     }
 
      //-- PIP Popup Indicator
-    Image {
+     //PIP 弹出指标
+ /*   Image {
         id:             popupPIP
         source:         "/qmlimages/PiP.svg"
         mipmap:         true
@@ -140,8 +146,9 @@ Item {
             }
         }
     }
-
+*/
     //-- PIP Corner Indicator
+    //PIP 角落指示器
     Image {
         id:             closePIP
         source:         "/qmlimages/pipHide.svg"
@@ -162,15 +169,19 @@ Item {
     }
 
     //-- Show PIP
+    //视频小框收起来的图标
     Rectangle {
         id:                     openPIP
         anchors.left :          parent.left
         anchors.bottom:         parent.bottom
         height:                 ScreenTools.defaultFontPixelHeight * 2
         width:                  ScreenTools.defaultFontPixelHeight * 2
-        radius:                 ScreenTools.defaultFontPixelHeight / 3
+//        radius:                 ScreenTools.defaultFontPixelHeight / 3
         visible:                isHidden
         color:                  isDark ? Qt.rgba(0,0,0,0.75) : Qt.rgba(0,0,0,0.5)
+//        color:                  "red"
+
+        //加载弹出视频框的图标
         Image {
             width:              parent.width  * 0.75
             height:             parent.height * 0.75
@@ -181,6 +192,7 @@ Item {
             anchors.verticalCenter:     parent.verticalCenter
             anchors.horizontalCenter:   parent.horizontalCenter
         }
+
         MouseArea {
             anchors.fill: parent
             onClicked: {

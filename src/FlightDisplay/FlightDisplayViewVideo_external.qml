@@ -40,10 +40,11 @@ Item {
         visible:        !(_videoReceiver && _videoReceiver.videoRunning)
         QGCLabel {
             text:               QGroundControl.settingsManager.videoSettings.streamEnabled.rawValue ? qsTr("WAITING FOR VIDEO-EXTERNAL") : qsTr("VIDEO DISABLED")
+//            text:               QGroundControl.settingsManager.videoSettings.streamEnabled.rawValue ? qsTr("                    -EXTERNAL") : qsTr("VIDEO DISABLED")
             font.family:        ScreenTools.demiboldFontFamily
             color:              "blue"
-//            font.pointSize:     _mainIsMap ? ScreenTools.smallFontPointSize : ScreenTools.largeFontPointSize
-            font.pointSize:     _mainIsMap ? 20 : 60
+            font.pointSize:     _mainIsMap ? ScreenTools.smallFontPointSize : ScreenTools.largeFontPointSize
+//            font.pointSize:     _mainIsMap ? 20 : 60
             anchors.centerIn:   parent
         }
         MouseArea {

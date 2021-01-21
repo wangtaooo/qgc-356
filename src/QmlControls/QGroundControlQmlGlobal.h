@@ -101,7 +101,7 @@ public:
 
     Q_INVOKABLE void    saveGlobalSetting       (const QString& key, const QString& value);
     Q_INVOKABLE QString loadGlobalSetting       (const QString& key, const QString& defaultValue);
-    Q_INVOKABLE void    saveBoolGlobalSetting   (const QString& key, bool value);
+    Q_INVOKABLE void    saveBoolGlobalSetting   (const QString& key, bool value);//用来保存全局变量的设置值
     Q_INVOKABLE bool    loadBoolGlobalSetting   (const QString& key, bool defaultValue);
 
     Q_INVOKABLE void    deleteAllSettingsNextBoot       () { _app->deleteAllSettingsNextBoot(); }
