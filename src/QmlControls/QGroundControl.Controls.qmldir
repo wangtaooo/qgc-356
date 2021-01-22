@@ -55,6 +55,8 @@ QGCMapPolylineVisuals   1.0 QGCMapPolylineVisuals.qml
 QGCMouseArea            1.0 QGCMouseArea.qml
 QGCMovableItem          1.0 QGCMovableItem.qml
 QGCPipable              1.0 QGCPipable.qml
+QGCPipableInternal      1.0 QGCPipableInternal.qml
+QGCPipableExternal      1.0 QGCPipableExternal.qml
 QGCRadioButton          1.0 QGCRadioButton.qml
 QGCSlider               1.0 QGCSlider.qml
 QGCSwitch               1.0 QGCSwitch.qml

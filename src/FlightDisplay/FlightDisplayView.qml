@@ -472,7 +472,7 @@ QGCView {
             width:          !_mainIsMap ? _panel.width  : _pipSize
             height:         !_mainIsMap ? _panel.height : _pipSize * (9/16)
             anchors.right:   _panel.right
-            anchors.top:  _panel.top
+            anchors.bottom:    _panel.bottom
             //如果有视频，并且 主界面不是地图或pip可见
 //            visible:        QGroundControl.videoManager.hasVideo && (!_mainIsMap || _isPipVisible)
             visible:        true
@@ -592,8 +592,9 @@ QGCView {
             z:              _mainIsMap ? _panel.z + 2 : _panel.z + 1
             width:          !_mainIsMap ? _panel.width  : _pipSize
             height:         !_mainIsMap ? _panel.height : _pipSize * (9/16)
-            anchors.right:   _panel.right
+            anchors.left:   _panel.left
             anchors.bottom: _panel.bottom
+            anchors.leftMargin: _pipSize * 2 + ScreenTools.defaultFontPixelWidth * 10
 //            //如果有视频，并且 主界面不是地图或pip可见
 //            visible:        QGroundControl.videoManager.hasVideo && (!_mainIsMap || _isPipVisible)
             visible:        true
@@ -737,6 +738,68 @@ QGCView {
                 _pipSize = newWidth
             }
         }
+        //加载新的qml Internal
+        QGCPipableInternal {
+            id:                 _flightVideoPipControlInternal
+            z:                  _flightVideo.z + 3
+            width:              _pipSize
+            height:             _pipSize * (9/16)
+            anchors.right:      _panel.right
+            anchors.top:        _panel.top
+//            anchors.margins:    ScreenTools.defaultFontPixelHeight
+            //
+//            visible:            QGroundControl.videoManager.hasVideo && !QGroundControl.videoManager.fullScreen && _flightVideo.state != "popup"
+            visible:            true
+//            isHidden:           !_isPipVisible
+//            isDark:             isBackgroundDark
+//            enablePopup:        _mainIsMap
+//            onActivated: {
+//                //修改是否为全屏地图的标志位
+//                _mainIsMap = !_mainIsMap
+//                setStates()
+//            }
+//            onHideIt: {
+//                setPipVisibility(!state)
+//            }
+//            onPopup: {
+//                videoWindow.visible = true
+//                _flightVideo.state = "popup"
+//            }
+//            onNewWidth: {
+//                _pipSize = newWidth
+//            }
+        }
+        //加载新的qml External
+        QGCPipableExternal {
+            id:                 _flightVideoPipControlExternal
+            z:                  _flightVideo.z + 3
+            width:              _pipSize
+            height:             _pipSize * (9/16)
+            anchors.right:      _panel.right
+            anchors.bottom:     _panel.bottom
+//            anchors.margins:    ScreenTools.defaultFontPixelHeight
+            //
+//            visible:            QGroundControl.videoManager.hasVideo && !QGroundControl.videoManager.fullScreen && _flightVideo.state != "popup"
+            visible:            true
+//            isHidden:           !_isPipVisible
+//            isDark:             isBackgroundDark
+//            enablePopup:        _mainIsMap
+//            onActivated: {
+//                //修改是否为全屏地图的标志位
+//                _mainIsMap = !_mainIsMap
+//                setStates()
+//            }
+//            onHideIt: {
+//                setPipVisibility(!state)
+//            }
+//            onPopup: {
+//                videoWindow.visible = true
+//                _flightVideo.state = "popup"
+//            }
+//            onNewWidth: {
+//                _pipSize = newWidth
+//            }
+        }
 
         Row {
             id:                     singleMultiSelector
@@ -747,6 +810,7 @@ QGCView {
             spacing:                ScreenTools.defaultFontPixelWidth
             z:                      _panel.z + 4
             visible:                QGroundControl.multiVehicleManager.vehicles.count > 1
+//            visible:                true
 
             ExclusiveGroup { id: multiVehicleSelectorGroup }
 
