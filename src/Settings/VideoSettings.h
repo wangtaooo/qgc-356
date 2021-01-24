@@ -11,7 +11,7 @@
 #define VideoSettings_H
 
 #include "SettingsGroup.h"
-
+//视频设置类
 class VideoSettings : public SettingsGroup
 {
     Q_OBJECT
@@ -20,7 +20,8 @@ public:
     VideoSettings(QObject* parent = nullptr);
     DEFINE_SETTING_NAME_GROUP()
 
-    DEFINE_SETTINGFACT(videoSource)
+    //设置相关的声明，利用了宏
+    DEFINE_SETTINGFACT(videoSource)//视频源
     DEFINE_SETTINGFACT(udpPort)
     DEFINE_SETTINGFACT(tcpUrl)
     DEFINE_SETTINGFACT(rtspUrl)
@@ -40,6 +41,7 @@ public:
     Q_PROPERTY(QString  udpVideoSource          READ udpVideoSource         CONSTANT)
     Q_PROPERTY(QString  tcpVideoSource          READ tcpVideoSource         CONSTANT)
     Q_PROPERTY(QString  mpegtsVideoSource       READ mpegtsVideoSource      CONSTANT)
+    Q_PROPERTY(QString  tomVideoSource          READ tomVideoSource         CONSTANT)
     Q_PROPERTY(QString  disabledVideoSource     READ disabledVideoSource      CONSTANT)
 
     bool     streamConfigured       ();
@@ -47,6 +49,7 @@ public:
     QString  udpVideoSource         () { return videoSourceUDP; }
     QString  tcpVideoSource         () { return videoSourceTCP; }
     QString  mpegtsVideoSource      () { return videoSourceMPEGTS; }
+    QString  tomVideoSource         () { return videoSourceTomTest; }
     QString  disabledVideoSource    () { return videoDisabled; }
 
     static const char* videoSourceNoVideo;
@@ -55,6 +58,7 @@ public:
     static const char* videoSourceRTSP;
     static const char* videoSourceTCP;
     static const char* videoSourceMPEGTS;
+    static const char* videoSourceTomTest;
 
 signals:
     void streamConfiguredChanged    ();

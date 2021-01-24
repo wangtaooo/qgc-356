@@ -51,13 +51,14 @@
 
 /// Provides access to group of settings. The group is named and has a visible property associated with which can control whether the group
 /// is shows in the ui.
+///提供对一组设置的访问。组被命名并有一个可见的属性，它可以控制是否将组显示在ui中。
 class SettingsGroup : public QObject
 {
     Q_OBJECT
 
 public:
-    /// @param name Name for this Settings group
-    /// @param settingsGroup Group to place settings in for QSettings::setGroup
+    /// @param name Name for this Settings group 此设置组的名称
+    /// @param settingsGroup Group to place settings in for QSettings::setGroup 组放置设置在QSettings::setGroup
     SettingsGroup(const QString &name, const QString &settingsGroup, QObject* parent = nullptr);
 
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)

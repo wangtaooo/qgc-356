@@ -115,6 +115,7 @@ public:
 #endif
 
     /// Allows the plugin to override the creation of VideoReceiver.
+    //服务器出现了。允许插件覆盖VideoReceiver的创建。现在我们开始这个流。
     virtual VideoReceiver* createVideoReceiver(QObject* parent);
 
     /// Allows the plugin to see all mavlink traffic to a vehicle

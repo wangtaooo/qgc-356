@@ -80,8 +80,9 @@ VideoReceiver::VideoReceiver(QObject* parent)
     _timer.setSingleShot(true);
     connect(&_timer, &QTimer::timeout, this, &VideoReceiver::_timeout);
     connect(this, &VideoReceiver::msgErrorReceived, this, &VideoReceiver::_handleError);
+    //得到EOS正常结束
     connect(this, &VideoReceiver::msgEOSReceived, this, &VideoReceiver::_handleEOS);
-    connect(this, &VideoReceiver::msgStateChangedReceived, this, &VideoReceiver::_handleStateChanged);
+    connect(this, &VideoReceiver::msgStateChangedReceived, this, &VideoReceiver::_handleStateChanged);//前边是信号会执行后面的函数
     connect(&_frameTimer, &QTimer::timeout, this, &VideoReceiver::_updateTimer);
     _frameTimer.start(1000);
 #endif
@@ -118,6 +119,7 @@ VideoReceiver::_setVideoSink(GstElement* sink)
 #endif
 
 //-----------------------------------------------------------------------------
+//捉取图像
 void
 VideoReceiver::grabImage(QString imageFile)
 {
@@ -150,6 +152,7 @@ void
 VideoReceiver::_connected()
 {
     //-- Server showed up. Now we start the stream.
+    //服务器出现了。现在我们开始这个流。
     _timer.stop();
     _socket->deleteLater();
     _socket = nullptr;
@@ -344,6 +347,9 @@ VideoReceiver::start()
         if((queue = gst_element_factory_make("queue", nullptr)) == nullptr)  {
             // TODO: We may want to add queue2 max-size-buffers=1 to get lower latency
             //       We should compare gstreamer scripts to QGroundControl to determine the need
+
+            //TODO:我们可能想要添加queue2 max-size-buffers=1来降低延迟
+            //我们应该比较gstreamer脚本和QGroundControl来确定是否需要
             qCritical() << "VideoReceiver::start() failed. Error with gst_element_factory_make('queue')";
             break;
         }
@@ -361,18 +367,21 @@ VideoReceiver::start()
         if(isTaisyncUSB) {
             gst_bin_add_many(GST_BIN(_pipeline), dataSource, parser, _tee, queue, decoder, queue1, _videoSink, nullptr);
         } else {
-            gst_bin_add_many(GST_BIN(_pipeline), dataSource, demux, parser, _tee, queue, decoder, queue1, _videoSink, nullptr);
+            //同时添加多个组件
+            gst_bin_add_many(GST_BIN(_pipeline), dataSource, demux, parser, _tee, queue, decoder, queue1, _videoSink, nullptr);//添加
         }
-        pipelineUp = true;
+        pipelineUp = true;//PipeLine设置完成
 
         if(isUdp) {
             // Link the pipeline in front of the tee
-            if(!gst_element_link_many(dataSource, demux, parser, _tee, queue, decoder, queue1, _videoSink, nullptr)) {
+            //连接三通前的管道
+            if(!gst_element_link_many(dataSource, demux, parser, _tee, queue, decoder, queue1, _videoSink, nullptr)) {//连接
                 qCritical() << "Unable to link UDP elements.";
                 break;
             }
         } else if(isTaisyncUSB) {
             // Link the pipeline in front of the tee
+            //连接三通前的管道
             if(!gst_element_link_many(dataSource, parser, _tee, queue, decoder, queue1, _videoSink, nullptr)) {
                 qCritical() << "Unable to link Taisync USB elements.";
                 break;
@@ -395,19 +404,19 @@ VideoReceiver::start()
             }
         }
 
-        dataSource = demux = parser = queue = decoder = queue1 = nullptr;
+        dataSource = demux = parser = queue = decoder = queue1 = nullptr;//用完的变量清空
 
         GstBus* bus = nullptr;
 
         if ((bus = gst_pipeline_get_bus(GST_PIPELINE(_pipeline))) != nullptr) {
-            gst_bus_enable_sync_message_emission(bus);
-            g_signal_connect(bus, "sync-message", G_CALLBACK(_onBusMessage), this);
+            gst_bus_enable_sync_message_emission(bus);//启动同步信号的发送
+            g_signal_connect(bus, "sync-message", G_CALLBACK(_onBusMessage), this);//设置回调函数
             gst_object_unref(bus);
             bus = nullptr;
         }
 
         GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(_pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline-paused");
-        running = gst_element_set_state(_pipeline, GST_STATE_PLAYING) != GST_STATE_CHANGE_FAILURE;
+        running = gst_element_set_state(_pipeline, GST_STATE_PLAYING) != GST_STATE_CHANGE_FAILURE;//检查当前pipeline的状态，并设置running
 
     } while(0);
 
@@ -416,16 +425,18 @@ VideoReceiver::start()
         caps = nullptr;
     }
 
-    if (!running) {
+    if (!running) {//启动失败的处理
         qCritical() << "VideoReceiver::start() failed";
 
         // In newer versions, the pipeline will clean up all references that are added to it
+        //在较新的版本中，管道将清除添加到它的所有引用
         if (_pipeline != nullptr) {
             gst_object_unref(_pipeline);
             _pipeline = nullptr;
         }
 
         // If we failed before adding items to the pipeline, then clean up
+        //如果我们在向管道添加项之前失败，那么清理
         if (!pipelineUp) {
             if (decoder != nullptr) {
                 gst_object_unref(decoder);
@@ -458,10 +469,10 @@ VideoReceiver::start()
             }
         }
 
-        _running = false;
+        _running = false;//设置运行状态为停止
     } else {
         GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(_pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline-playing");
-        _running = true;
+        _running = true;//设置运行状态为开始
         qCDebug(VideoReceiverLog) << "Running";
     }
     _starting = false;
@@ -491,6 +502,7 @@ VideoReceiver::stop()
             _shutdownPipeline();
             qCritical() << "Error stopping pipeline!";
         } else if(GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS) {
+            //得到EOS正常结束
             _handleEOS();
         }
         gst_message_unref(message);
@@ -508,7 +520,7 @@ VideoReceiver::setUri(const QString & uri)
 //-----------------------------------------------------------------------------
 #if defined(QGC_GST_STREAMING)
 void
-VideoReceiver::_shutdownPipeline() {
+VideoReceiver::_shutdownPipeline() {//关闭PIPELine
     if(!_pipeline) {
         qCDebug(VideoReceiverLog) << "No pipeline";
         return;
@@ -552,7 +564,7 @@ VideoReceiver::_handleEOS() {
         _shutdownPipeline();
         qCDebug(VideoReceiverLog) << "Stopped";
     } else if(_recording && _sink->removing) {
-        _shutdownRecordingBranch();
+        _shutdownRecordingBranch();//正常关闭，并释放资源.这里 特指录音部分
     } else {
         qWarning() << "VideoReceiver: Unexpected EOS!";
         stop();
@@ -563,6 +575,7 @@ VideoReceiver::_handleEOS() {
 
 //-----------------------------------------------------------------------------
 #if defined(QGC_GST_STREAMING)
+//处理状态变化的函数
 void
 VideoReceiver::_handleStateChanged() {
     if(_pipeline) {
@@ -593,6 +606,7 @@ VideoReceiver::_onBusMessage(GstBus* bus, GstMessage* msg, gpointer data)
     }
         break;
     case(GST_MESSAGE_EOS):
+        //关闭视频流后会执行到这里
         pThis->msgEOSReceived();
         break;
     case(GST_MESSAGE_STATE_CHANGED):
@@ -612,28 +626,34 @@ void
 VideoReceiver::_cleanupOldVideos()
 {
     //-- Only perform cleanup if storage limit is enabled
+    //仅在启用存储限制时才执行清理操作
     if(_videoSettings->enableStorageLimit()->rawValue().toBool()) {
         QString savePath = qgcApp()->toolbox()->settingsManager()->appSettings()->videoSavePath();
         QDir videoDir = QDir(savePath);
         videoDir.setFilter(QDir::Files | QDir::Readable | QDir::NoSymLinks | QDir::Writable);
         videoDir.setSorting(QDir::Time);
         //-- All the movie extensions we support
+        //我们支持所有的电影扩展
         QStringList nameFilters;
         for(uint32_t i = 0; i < NUM_MUXES; i++) {
             nameFilters << QString("*.") + QString(kVideoExtensions[i]);
         }
         videoDir.setNameFilters(nameFilters);
         //-- get the list of videos stored
+        //获取存储的视频列表
         QFileInfoList vidList = videoDir.entryInfoList();
         if(!vidList.isEmpty()) {
             uint64_t total   = 0;
             //-- Settings are stored using MB
+            //设置使用MB存储
             uint64_t maxSize = (_videoSettings->maxVideoSize()->rawValue().toUInt() * 1024 * 1024);
             //-- Compute total used storage
+            //计算使用的存储总量
             for(int i = 0; i < vidList.size(); i++) {
                 total += vidList[i].size();
             }
             //-- Remove old movies until max size is satisfied.
+            //删除老电影，直到最大尺寸满足。
             while(total >= maxSize && !vidList.isEmpty()) {
                 total -= vidList.last().size();
                 qCDebug(VideoReceiverLog) << "Removing old video file:" << vidList.last().filePath();
@@ -665,22 +685,24 @@ VideoReceiver::startRecording(const QString &videoFile)
 
     qCDebug(VideoReceiverLog) << "startRecording()";
     // exit immediately if we are already recording
+    //如果我们已经在录音，请立即退出
     if(_pipeline == nullptr || _recording) {
         qCDebug(VideoReceiverLog) << "Already recording!";
         return;
     }
 
-    uint32_t muxIdx = _videoSettings->recordingFormat()->rawValue().toUInt();
+    uint32_t muxIdx = _videoSettings->recordingFormat()->rawValue().toUInt();//Type:mkv,mov,mp4
     if(muxIdx >= NUM_MUXES) {
         qgcApp()->showMessage(tr("Invalid video format defined."));
         return;
     }
 
     //-- Disk usage maintenance
+    //磁盘使用情况维护
     _cleanupOldVideos();
 
     _sink           = new Sink();
-    _sink->teepad   = gst_element_get_request_pad(_tee, "src_%u");
+    _sink->teepad   = gst_element_get_request_pad(_tee, "src_%u");//获取
     _sink->queue    = gst_element_factory_make("queue", nullptr);
     _sink->parse    = gst_element_factory_make("h264parse", nullptr);
     _sink->mux      = gst_element_factory_make(kVideoMuxes[muxIdx], nullptr);
@@ -723,18 +745,24 @@ VideoReceiver::startRecording(const QString &videoFile)
     // Install a probe on the recording branch to drop buffers until we hit our first keyframe
     // When we hit our first keyframe, we can offset the timestamps appropriately according to the first keyframe time
     // This will ensure the first frame is a keyframe at t=0, and decoding can begin immediately on playback
+
+    //在记录分支上安装一个探针，直到我们碰到第一个关键帧
+    //当我们命中第一个关键帧时，我们可以根据第一个关键帧的时间适当地偏移时间戳
+    //这将确保第一帧是t=0的关键帧，解码可以在播放时立即开始
+    
     GstPad* probepad = gst_element_get_static_pad(_sink->queue, "src");
-    gst_pad_add_probe(probepad, (GstPadProbeType)(GST_PAD_PROBE_TYPE_BUFFER /* | GST_PAD_PROBE_TYPE_BLOCK */), _keyframeWatch, this, nullptr); // to drop the buffer or to block the buffer?
+    gst_pad_add_probe(probepad, (GstPadProbeType)(GST_PAD_PROBE_TYPE_BUFFER /* | GST_PAD_PROBE_TYPE_BLOCK */), _keyframeWatch, this, nullptr); // to drop the buffer or to block the buffer? 是删除缓冲区还是阻塞缓冲区?
     gst_object_unref(probepad);
 
     // Link the recording branch to the pipeline
+    //将记录分支链接到管道
     GstPad* sinkpad = gst_element_get_static_pad(_sink->queue, "sink");
     gst_pad_link(_sink->teepad, sinkpad);
     gst_object_unref(sinkpad);
 
     GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(_pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline-recording");
 
-    _recording = true;
+    _recording = true;//开始录像标志位
     emit recordingChanged();
     qCDebug(VideoReceiverLog) << "Recording started";
 #else
@@ -749,11 +777,13 @@ VideoReceiver::stopRecording(void)
 #if defined(QGC_GST_STREAMING)
     qCDebug(VideoReceiverLog) << "stopRecording()";
     // exit immediately if we are not recording
+    //如果没有录音，请立即退出
     if(_pipeline == nullptr || !_recording) {
         qCDebug(VideoReceiverLog) << "Not recording!";
         return;
     }
     // Wait for data block before unlinking
+    //在断开链接之前等待数据块
     gst_pad_add_probe(_sink->teepad, GST_PAD_PROBE_TYPE_IDLE, _unlinkCallBack, this, nullptr);
 #endif
 }
@@ -764,15 +794,23 @@ VideoReceiver::stopRecording(void)
 // -EOS has appeared on the bus of the temporary pipeline
 // -At this point all of the recoring elements have been flushed, and the video file has been finalized
 // -Now we can remove the temporary pipeline and its elements
+
+//它只按顺序安装在瞬态_pipelineStopRec上
+//完成一个视频文件。它不用于main _pipeline。
+// -EOS已经出现在临时管道的总线上
+// -此时，所有的记录元素都已刷新，并且视频文件已经完成
+// -现在我们可以移除临时管道及其元素
+
 #if defined(QGC_GST_STREAMING)
 void
 VideoReceiver::_shutdownRecordingBranch()
 {
+    //依次移除下面的组件
     gst_bin_remove(GST_BIN(_pipelineStopRec), _sink->queue);
     gst_bin_remove(GST_BIN(_pipelineStopRec), _sink->parse);
     gst_bin_remove(GST_BIN(_pipelineStopRec), _sink->mux);
     gst_bin_remove(GST_BIN(_pipelineStopRec), _sink->filesink);
-
+    //设置状态为空
     gst_element_set_state(_pipelineStopRec, GST_STATE_NULL);
     gst_object_unref(_pipelineStopRec);
     _pipelineStopRec = nullptr;
@@ -801,6 +839,12 @@ VideoReceiver::_shutdownRecordingBranch()
 // -Create a second temporary pipeline, and place the recording branch elements into that pipeline
 // -Setup watch and handler for EOS event on the temporary pipeline's bus
 // -Send an EOS event at the beginning of that pipeline
+
+//断开main _pipeline中的tee的记录分支
+//创建第二个临时管道，并将记录分支元素放入该管道
+//在临时管道总线上设置EOS事件的监视和处理程序
+// -在管道的开头发送一个EOS事件
+
 #if defined(QGC_GST_STREAMING)
 void
 VideoReceiver::_detachRecordingBranch(GstPadProbeInfo* info)
@@ -808,6 +852,7 @@ VideoReceiver::_detachRecordingBranch(GstPadProbeInfo* info)
     Q_UNUSED(info)
 
     // Also unlinks and unrefs
+    //也取消链接和取消引用
     gst_bin_remove_many(GST_BIN(_pipeline), _sink->queue, _sink->parse, _sink->mux, _sink->filesink, nullptr);
 
     // Give tee its pad back
@@ -815,9 +860,11 @@ VideoReceiver::_detachRecordingBranch(GstPadProbeInfo* info)
     gst_object_unref(_sink->teepad);
 
     // Create temporary pipeline
+    //创建临时管道
     _pipelineStopRec = gst_pipeline_new("pipeStopRec");
 
     // Put our elements from the recording branch into the temporary pipeline
+    //将我们的元素从记录分支放入临时管道中
     gst_bin_add_many(GST_BIN(_pipelineStopRec), _sink->queue, _sink->parse, _sink->mux, _sink->filesink, nullptr);
     gst_element_link_many(_sink->queue, _sink->parse, _sink->mux, _sink->filesink, nullptr);
 
@@ -848,6 +895,7 @@ VideoReceiver::_unlinkCallBack(GstPad* pad, GstPadProbeInfo* info, gpointer user
     if(info != nullptr && user_data != nullptr) {
         VideoReceiver* pThis = static_cast<VideoReceiver*>(user_data);
         // We will only act once
+        //我们只会行动一次
         if(g_atomic_int_compare_and_exchange(&pThis->_sink->removing, FALSE, TRUE)) {
             pThis->_detachRecordingBranch(info);
         }
@@ -864,17 +912,18 @@ VideoReceiver::_keyframeWatch(GstPad* pad, GstPadProbeInfo* info, gpointer user_
     Q_UNUSED(pad);
     if(info != nullptr && user_data != nullptr) {
         GstBuffer* buf = gst_pad_probe_info_get_buffer(info);
-        if(GST_BUFFER_FLAG_IS_SET(buf, GST_BUFFER_FLAG_DELTA_UNIT)) { // wait for a keyframe
+        if(GST_BUFFER_FLAG_IS_SET(buf, GST_BUFFER_FLAG_DELTA_UNIT)) { // wait for a keyframe 等待一个关键帧
             return GST_PAD_PROBE_DROP;
         } else {
             VideoReceiver* pThis = static_cast<VideoReceiver*>(user_data);
             // reset the clock
+            //重置时钟
             GstClock* clock = gst_pipeline_get_clock(GST_PIPELINE(pThis->_pipeline));
             GstClockTime time = gst_clock_get_time(clock);
             gst_object_unref(clock);
-            gst_element_set_base_time(pThis->_pipeline, time); // offset pipeline timestamps to start at zero again
-            buf->dts = 0; // The offset will not apply to this current buffer, our first frame, timestamp is zero
-            buf->pts = 0;
+            gst_element_set_base_time(pThis->_pipeline, time); // offset pipeline timestamps to start at zero again 偏移管道时间戳，使其再次从零开始
+            buf->dts = 0; // The offset will not apply to this current buffer, our first frame, timestamp is zero 
+            buf->pts = 0;//偏移量将不适用于当前缓冲区，我们的第一个帧，时间戳是零
             qCDebug(VideoReceiverLog) << "Got keyframe, stop dropping buffers";
         }
     }
@@ -885,7 +934,7 @@ VideoReceiver::_keyframeWatch(GstPad* pad, GstPadProbeInfo* info, gpointer user_
 
 //-----------------------------------------------------------------------------
 void
-VideoReceiver::_updateTimer()
+VideoReceiver::_updateTimer()//超时后，更新计时器
 {
 #if defined(QGC_GST_STREAMING)
     if(_videoSurface) {
@@ -917,6 +966,7 @@ VideoReceiver::_updateTimer()
             if(elapsed > static_cast<time_t>(timeout) && _videoSurface) {
                 stop();
                 // We want to start it back again with _updateTimer
+                //我们想要用_updateTimer重新启动它
                 _stop = false;
             }
         } else {

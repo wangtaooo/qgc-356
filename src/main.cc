@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 
     ParseCmdLineOptions(argc, argv, rgCmdLineOptions, sizeof(rgCmdLineOptions)/sizeof(rgCmdLineOptions[0]), false);
     if (stressUnitTests) {
-        runUnitTests = true;
+        runUnitTests = true;//测试模式
     }
 
     if (quietWindowsAsserts) {
@@ -220,15 +220,15 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_WIN
     if (runUnitTests) {
-        // Don't pop up Windows Error Reporting dialog when app crashes. This prevents TeamCity from
-        // hanging.
+        // Don't pop up Windows Error Reporting dialog when app crashes. This prevents TeamCity from hanging.
+        // 当应用程序崩溃时不要弹出Windows错误报告对话框。这可以防止TeamCity被挂掉
         DWORD dwMode = SetErrorMode(SEM_NOGPFAULTERRORBOX);
         SetErrorMode(dwMode | SEM_NOGPFAULTERRORBOX);
     }
 #endif
 #endif // QT_DEBUG
 
-    QGCApplication* app = new QGCApplication(argc, argv, runUnitTests);
+    QGCApplication* app = new QGCApplication(argc, argv, runUnitTests);//创建QGC app
     Q_CHECK_PTR(app);
 
 #ifdef Q_OS_LINUX
@@ -240,11 +240,15 @@ int main(int argc, char *argv[])
     // with them on tracking down the bug. For now we register the type which is giving us problems here
     // while we only have the main thread. That should prevent it from hitting the race condition later
     // on in the code.
+    
+    //在qRegisterMetaType中出现一个线程问题，它会导致抛出qWarning关于复制类型转换器。这是由Qt代码中的竞争条件引起的。仍在工作
+    //与他们一起追踪漏洞。现在，我们注册给我们带来问题的类型我们只有主线程。这应该可以防止它在以后碰到竞争条件在代码中。
+    
     qRegisterMetaType<QList<QPair<QByteArray,QByteArray> > >();
 
-    app->_initCommon();
+    app->_initCommon();//初始化从这里开始
     //-- Initialize Cache System
-    getQGCMapEngine()->init();
+    getQGCMapEngine()->init();//初始化缓存系统
 
     int exitCode = 0;
 

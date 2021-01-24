@@ -18,6 +18,7 @@ Q_DECLARE_LOGGING_CATEGORY(CameraControlLog)
 Q_DECLARE_LOGGING_CATEGORY(CameraControlLogVerbose)
 
 //-----------------------------------------------------------------------------
+//视频流信息类的定义
 class QGCVideoStreamInfo : public QObject
 {
     Q_OBJECT
@@ -166,7 +167,7 @@ public:
     Q_INVOKABLE virtual void setVideoMode   ();
     Q_INVOKABLE virtual void setPhotoMode   ();
     Q_INVOKABLE virtual void toggleMode     ();
-    Q_INVOKABLE virtual bool takePhoto      ();
+    Q_INVOKABLE virtual bool takePhoto      ();//拍照
     Q_INVOKABLE virtual bool stopTakePhoto  ();
     Q_INVOKABLE virtual bool startVideo     ();
     Q_INVOKABLE virtual bool stopVideo      ();

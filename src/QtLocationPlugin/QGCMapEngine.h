@@ -62,6 +62,7 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+//QGC地图引擎
 class QGCMapEngine : public QObject
 {
     Q_OBJECT
@@ -103,6 +104,7 @@ public:
     static int                  concurrentDownloads (UrlFactory::MapType type);
 
     /// size of an elevation tile in degree
+    ///立面砖的大小，以度数表示
     static const double         srtm1TileSize;
 
 private slots:
@@ -129,7 +131,7 @@ private:
     quint32                 _maxMemCache;
     bool                    _prunning;
     bool                    _cacheWasReset;
-    bool                    _isInternetActive;
+    bool                    _isInternetActive;//互联网活跃
 };
 
 extern QGCMapEngine*    getQGCMapEngine();

@@ -106,7 +106,7 @@ static const char* kMaxDiskCacheKey = "MaxDiskCache";
 static const char* kMaxMemCacheKey  = "MaxMemoryCache";
 
 //-----------------------------------------------------------------------------
-// Singleton
+// Singleton 单例模式 全局变量
 static QGCMapEngine* kMapEngine = NULL;
 QGCMapEngine*
 getQGCMapEngine()
@@ -130,6 +130,7 @@ destroyMapEngine()
 }
 
 //-----------------------------------------------------------------------------
+//构造函数
 QGCMapEngine::QGCMapEngine()
     : _urlFactory(new UrlFactory())
 #ifdef WE_ARE_KOSHER
@@ -481,7 +482,7 @@ QGCMapEngine::_updateTotals(quint32 totaltiles, quint64 totalsize, quint32 defau
     emit updateTotals(totaltiles, totalsize, defaulttiles, defaultsize);
     quint64 maxSize = (quint64)getMaxDiskCache() * 1024L * 1024L;
     if(!_prunning && defaultsize > maxSize) {
-        //-- Prune Disk Cache
+        //-- Prune Disk Cache 删除磁盘高速缓存
         _prunning = true;
         QGCPruneCacheTask* task = new QGCPruneCacheTask(defaultsize - maxSize);
         connect(task, &QGCPruneCacheTask::pruned, this, &QGCMapEngine::_pruned);
@@ -492,7 +493,7 @@ QGCMapEngine::_updateTotals(quint32 totaltiles, quint64 totalsize, quint32 defau
 void
 QGCMapEngine::_pruned()
 {
-    _prunning = false;
+    _prunning = false;//
 }
 
 //-----------------------------------------------------------------------------

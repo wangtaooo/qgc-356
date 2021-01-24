@@ -92,6 +92,7 @@ private:
     VideoManager*               _videoManager           = nullptr;
     MAVLinkLogManager*          _mavlinkLogManager      = nullptr;
     QGCCorePlugin*              _corePlugin             = nullptr;
+    //这里会记录所有的设置管理
     SettingsManager*            _settingsManager        = nullptr;
     AirspaceManager*            _airspaceManager        = nullptr;
 #if defined(QGC_GST_TAISYNC_ENABLED)
@@ -108,6 +109,11 @@ public:
     // All tools must be parented to the QGCToolbox and go through a two phase creation. In the constructor the toolbox
     // should only be passed to QGCTool constructor for correct parenting. It should not be referenced or set in the
     // protected member. Then in the second phase of setToolbox calls is where you can reference the toolbox.
+
+    //所有的工具必须是QGCToolbox的父类，并且要经过两个阶段的创建。在构造函数的工具箱中
+    //应该只传递给QGCTool的构造器，以正确的养育。属性中不应该引用或设置它
+    //保护成员。然后在setToolbox调用的第二阶段可以引用工具箱。
+    
     QGCTool(QGCApplication* app, QGCToolbox* toolbox);
 
     // If you override this method, you must call the base class.
@@ -115,7 +121,7 @@ public:
 
 protected:
     QGCApplication* _app;
-    QGCToolbox*     _toolbox;
+    QGCToolbox*     _toolbox;//这个工具的toolbox
 };
 
 #endif

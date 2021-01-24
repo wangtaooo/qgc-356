@@ -67,6 +67,7 @@ private:
     void        _exportSets             (QGCMapTask* mtask);
     void        _importSets             (QGCMapTask* mtask);
     bool        _testTask               (QGCMapTask* mtask);
+    //测试网络
     void        _testInternet           ();
 
     quint64     _findTile               (const QString hash);
@@ -80,7 +81,7 @@ private:
 
 signals:
     void        updateTotals            (quint32 totaltiles, quint64 totalsize, quint32 defaulttiles, quint64 defaultsize);
-    void        internetStatus          (bool active);
+    void        internetStatus          (bool active);//串起来的信号
 
 private:
     QQueue<QGCMapTask*>     _taskQueue;

@@ -57,7 +57,7 @@ signals:
     void positionInfoUpdated(QGeoPositionInfo update);
 
 private:
-    int             _updateInterval;
+    int             _updateInterval;//更新间隔
     QGeoCoordinate  _gcsPosition;
     qreal           _gcsHeading;
 

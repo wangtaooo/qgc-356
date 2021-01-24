@@ -69,7 +69,7 @@ void QGCPositionManager::setNmeaSourceDevice(QIODevice* device)
     setPositionSource(QGCPositionManager::NmeaGPS);
 }
 
-void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
+void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)//位置更新
 {
     QGeoCoordinate newGCSPosition = QGeoCoordinate();
     qreal newGCSHeading = update.attribute(QGeoPositionInfo::Direction);
@@ -89,7 +89,7 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
         emit gcsHeadingChanged(_gcsHeading);
     }
 
-    emit positionInfoUpdated(update);
+    emit positionInfoUpdated(update);//触发FollowMe
 }
 
 int QGCPositionManager::updateInterval() const

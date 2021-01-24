@@ -40,8 +40,8 @@ public:
      */
 #if defined(QGC_GST_STREAMING)
     GstElement* videoSink();
-    time_t      lastFrame() { return _lastFrame; }
-    void        setLastFrame(time_t t) { _lastFrame = t; }
+    time_t      lastFrame() { return _lastFrame; }//最后一帧的时间
+    void        setLastFrame(time_t t) { _lastFrame = t; }//设置最后一帧的时间
 #endif
 
 protected:
@@ -54,7 +54,7 @@ private:
     friend class VideoItem;
 #if defined(QGC_GST_STREAMING)
     VideoSurfacePrivate * const _data;
-    time_t  _lastFrame;
+    time_t  _lastFrame;//最后一帧的时间
     bool    _refed;
 #endif
 };

@@ -46,6 +46,7 @@
 QGCToolbox::QGCToolbox(QGCApplication* app)
 {
     // SettingsManager must be first so settings are available to any subsequent tools
+    //SettingsManager必须放在首位，以便任何后续工具都可以使用设置
     _settingsManager        = new SettingsManager           (app, this);
     //-- Scan and load plugins
     _scanAndLoadPlugins(app);
@@ -79,10 +80,11 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     _taisyncManager         = new TaisyncManager            (app, this);
 #endif
 }
-
+//设置子工具盒
 void QGCToolbox::setChildToolboxes(void)
 {
     // SettingsManager must be first so settings are available to any subsequent tools
+    //SettingsManager必须放在首位，以便任何后续工具都可以使用设置
     _settingsManager->setToolbox(this);
     _corePlugin->setToolbox(this);
     _audioOutput->setToolbox(this);
@@ -99,7 +101,7 @@ void QGCToolbox::setChildToolboxes(void)
     _multiVehicleManager->setToolbox(this);
     _mapEngineManager->setToolbox(this);
     _uasMessageHandler->setToolbox(this);
-    _followMe->setToolbox(this);
+    _followMe->setToolbox(this);//run
     _qgcPositionManager->setToolbox(this);
     _videoManager->setToolbox(this);
     _mavlinkLogManager->setToolbox(this);

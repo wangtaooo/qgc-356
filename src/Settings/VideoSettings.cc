@@ -18,13 +18,14 @@
 #ifndef QGC_DISABLE_UVC
 #include <QCameraInfo>
 #endif
-
+//下面是集中视频源的类型
 const char* VideoSettings::videoSourceNoVideo   = "No Video Available";
 const char* VideoSettings::videoDisabled        = "Video Stream Disabled";
 const char* VideoSettings::videoSourceRTSP      = "RTSP Video Stream";
 const char* VideoSettings::videoSourceUDP       = "UDP Video Stream";
 const char* VideoSettings::videoSourceTCP       = "TCP-MPEG2 Video Stream";
 const char* VideoSettings::videoSourceMPEGTS    = "MPEG-TS (h.264) Video Stream";
+const char* VideoSettings::videoSourceTomTest   = "Tom Test 20210123";
 
 DECLARE_SETTINGGROUP(Video, "Video")
 {
@@ -40,6 +41,7 @@ DECLARE_SETTINGGROUP(Video, "Video")
 #endif
     videoSourceList.append(videoSourceTCP);
     videoSourceList.append(videoSourceMPEGTS);
+    videoSourceList.append(videoSourceTomTest);
 #endif
 #ifndef QGC_DISABLE_UVC
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
@@ -160,6 +162,11 @@ bool VideoSettings::streamConfigured(void)
     if(vSource == videoSourceMPEGTS) {
         qCDebug(VideoManagerLog) << "Testing configuration for MPEG-TS Stream:" << udpPort()->rawValue().toInt();
         return udpPort()->rawValue().toInt() != 0;
+    }
+    //-- If Tom Test, check if port is set
+    if(vSource == videoSourceTomTest) {
+        qCDebug(VideoManagerLog) << "Testing configuration for Tom Test:";
+        return 0;
     }
     return false;
 }

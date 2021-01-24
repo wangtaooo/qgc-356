@@ -36,7 +36,7 @@ void SettingsManager::setToolbox(QGCToolbox *toolbox)
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     qmlRegisterUncreatableType<SettingsManager>("QGroundControl.SettingsManager", 1, 0, "SettingsManager", "Reference only");
 
-    _unitsSettings =        new UnitsSettings       (this);        // Must be first since AppSettings references it
+    _unitsSettings =        new UnitsSettings       (this);        // Must be first since AppSettings references it 必须是第一个，因为AppSettings引用了它
     _appSettings =          new AppSettings         (this);
     _autoConnectSettings =  new AutoConnectSettings (this);
     _videoSettings =        new VideoSettings       (this);

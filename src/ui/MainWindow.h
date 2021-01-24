@@ -44,7 +44,7 @@ class QGCStatusBar;
 class Linecharts;
 
 /**
- * @brief Main Application Window
+ * @brief Main Application Window 主应用程序窗口
  *
  **/
 class MainWindow : public QMainWindow
@@ -54,6 +54,7 @@ class MainWindow : public QMainWindow
 public:
     /// @brief Returns the MainWindow singleton. Will not create the MainWindow if it has not already
     ///         been created.
+    ///返回MainWindow单例。将不会创建主窗口，如果它还没有被创建。
     static MainWindow* instance(void);
 
     /// @brief Deletes the MainWindow singleton

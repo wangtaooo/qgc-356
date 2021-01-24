@@ -45,6 +45,8 @@ QGCView {
     property var    _geoFenceController:    _planMasterController.geoFenceController
     property var    _rallyPointController:  _planMasterController.rallyPointController
     property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+    //添加窗口切换状态变量
+//    property var    _mainIsWhat:            QGroundControl.multiVehicleManager.activeVehicle
     property bool   _mainIsMap:             QGroundControl.videoManager.hasVideo ? QGroundControl.loadBoolGlobalSetting(_mainIsMapKey,  true) : true
     property bool   _isPipVisible:          QGroundControl.videoManager.hasVideo ? QGroundControl.loadBoolGlobalSetting(_PIPVisibleKey, true) : false
     property bool   _useChecklist:          QGroundControl.settingsManager.appSettings.useChecklist.rawValue
@@ -68,6 +70,7 @@ QGCView {
     readonly property string    _mainIsMapKey:          "MainFlyWindowIsMap"
     readonly property string    _PIPVisibleKey:         "IsPIPVisible"
 
+    //修改显示状态
     function setStates() {
         QGroundControl.saveBoolGlobalSetting(_mainIsMapKey, _mainIsMap)
         if(_mainIsMap) {//主屏显示地图
@@ -724,7 +727,7 @@ QGCView {
             enablePopup:        _mainIsMap
             onActivated: {
                 //修改是否为全屏地图的标志位
-                _mainIsMap = !_mainIsMap
+//                _mainIsMap = !_mainIsMap
                 setStates()
             }
             onHideIt: {
@@ -744,8 +747,9 @@ QGCView {
             z:                  _flightVideo.z + 3
             width:              _pipSize
             height:             _pipSize * (9/16)
-            anchors.right:      _panel.right
-            anchors.top:        _panel.top
+            anchors.left:      _panel.left
+            anchors.bottom:        _panel.bottom
+            anchors.leftMargin: _pipSize * 2 + ScreenTools.defaultFontPixelWidth * 10
 //            anchors.margins:    ScreenTools.defaultFontPixelHeight
             //
 //            visible:            QGroundControl.videoManager.hasVideo && !QGroundControl.videoManager.fullScreen && _flightVideo.state != "popup"

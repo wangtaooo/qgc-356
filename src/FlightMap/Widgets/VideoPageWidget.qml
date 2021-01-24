@@ -108,6 +108,7 @@ Item {
            visible:         QGroundControl.settingsManager.videoSettings.showRecControl.rawValue
         }
         // Button to start/stop video recording
+        //按钮，开始/停止录像
         Item {
             anchors.margins:    ScreenTools.defaultFontPixelHeight / 2
             height:             ScreenTools.defaultFontPixelHeight * 2
@@ -148,7 +149,7 @@ Item {
                         // reset blinking animation
                         recordBtnBackground.opacity = 1
                     } else {
-                        _videoReceiver.startRecording()
+                        _videoReceiver.startRecording()//录像按钮驱动录像
                     }
                 }
             }

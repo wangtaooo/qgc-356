@@ -169,7 +169,7 @@ Column {
                     if(_cameraPhotoMode && !_cameraPhotoIdle && _cameraElapsedMode) {
                         _camera.stopTakePhoto()
                     } else {
-                        _camera.takePhoto()
+                        _camera.takePhoto()//拍照
                     }
                 }
             }

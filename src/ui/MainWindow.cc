@@ -84,7 +84,7 @@ static const char *rgDockWidgetNames[] = {
 static const char* _visibleWidgetsKey = "VisibleWidgets";
 #endif
 
-static MainWindow* _instance = nullptr;   ///< @brief MainWindow singleton
+static MainWindow* _instance = nullptr;   ///< @brief MainWindow singleton 主窗口单例
 
 MainWindow* MainWindow::_create()
 {

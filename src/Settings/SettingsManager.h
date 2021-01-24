@@ -29,6 +29,7 @@
 #include <QVariantList>
 
 /// Provides access to all app settings
+///提供访问所有应用程序设置
 class SettingsManager : public QGCTool
 {
     Q_OBJECT
@@ -42,6 +43,7 @@ public:
     Q_PROPERTY(QObject* appSettings         READ appSettings            CONSTANT)
     Q_PROPERTY(QObject* unitsSettings       READ unitsSettings          CONSTANT)
     Q_PROPERTY(QObject* autoConnectSettings READ autoConnectSettings    CONSTANT)
+    //视频设置接口
     Q_PROPERTY(QObject* videoSettings       READ videoSettings          CONSTANT)
     Q_PROPERTY(QObject* flightMapSettings   READ flightMapSettings      CONSTANT)
     Q_PROPERTY(QObject* rtkSettings         READ rtkSettings            CONSTANT)
@@ -50,6 +52,7 @@ public:
     Q_PROPERTY(QObject* brandImageSettings  READ brandImageSettings     CONSTANT)
 
     // Override from QGCTool
+    //重载QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
 #if defined(QGC_AIRMAP_ENABLED)
@@ -66,6 +69,9 @@ public:
     BrandImageSettings*     brandImageSettings  (void) { return _brandImageSettings; }
 
 private:
+//下面应该会记录所有的参数
+//class SettingsGroup : public QObject
+//class AirMapSettings : public SettingsGroup
 #if defined(QGC_AIRMAP_ENABLED)
     AirMapSettings*         _airMapSettings;
 #endif

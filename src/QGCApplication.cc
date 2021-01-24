@@ -127,10 +127,11 @@ const char* QGCApplication::_darkStyleFile          = ":/res/styles/style-dark.c
 const char* QGCApplication::_lightStyleFile         = ":/res/styles/style-light.css";
 
 // Mavlink status structures for entire app
+// 整个应用程序的Mavlink状态结构
 mavlink_status_t m_mavlink_status[MAVLINK_COMM_NUM_BUFFERS];
 
 // Qml Singleton factories
-
+// Qml单工厂
 static QObject* screenToolsControllerSingletonFactory(QQmlEngine*, QJSEngine*)
 {
     ScreenToolsController* screenToolsController = new ScreenToolsController;
@@ -140,6 +141,7 @@ static QObject* screenToolsControllerSingletonFactory(QQmlEngine*, QJSEngine*)
 static QObject* qgroundcontrolQmlGlobalSingletonFactory(QQmlEngine*, QJSEngine*)
 {
     // We create this object as a QGCTool even though it isn't in the toolbox
+    //我们将这个对象创建为QGCTool，即使它不在工具箱中
     QGroundControlQmlGlobal* qmlGlobal = new QGroundControlQmlGlobal(qgcApp(), qgcApp()->toolbox());
     qmlGlobal->setToolbox(qgcApp()->toolbox());
 
@@ -150,7 +152,7 @@ static QObject* shapeFileHelperSingletonFactory(QQmlEngine*, QJSEngine*)
 {
     return new ShapeFileHelper;
 }
-
+//QGC app构造函数
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
 #ifdef __mobile__
     : QGuiApplication           (argc, argv)
@@ -174,24 +176,26 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
 
 
     QLocale locale = QLocale::system();
-    //-- Some forced locales for testing
+    //-- Some forced locales for testing 一些用于测试的强制locale
     //QLocale locale = QLocale(QLocale::German);
     //QLocale locale = QLocale(QLocale::French);
     //QLocale locale = QLocale(QLocale::Chinese);
 #if defined (__macos__)
     locale = QLocale(locale.name());
 #endif
-    qDebug() << "System reported locale:" << locale << locale.name();
-    //-- Our localization
+    qDebug() << "System reported locale:" << locale << locale.name();//System reported locale: QLocale(English, Latin, United States) "en_US"
+    //-- Our localization 我们的定位
     if(_QGCTranslator.load(locale, "qgc_", "", ":/localization"))
         _app->installTranslator(&_QGCTranslator);
 
     // This prevents usage of QQuickWidget to fail since it doesn't support native widget siblings
+    //这防止了QQuickWidget的使用失败，因为它不支持本机小部件兄弟
 #ifndef __android__
     setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 #endif
 
     // Setup for network proxy support
+    // 安装网络代理支持
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
 #ifdef Q_OS_LINUX
@@ -199,6 +203,7 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     if (!_runningUnitTests) {
         if (getuid() == 0) {
             QMessageBox msgBox;
+            //如果是root启动的话，会弹出对话框，无法启动
             msgBox.setInformativeText(tr("You are running %1 as root. "
                                          "You should not do this since it will cause other issues with %1. "
                                          "%1 will now exit. "
@@ -207,12 +212,14 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
                                          "sudo apt-get remove modemmanager").arg(qgcApp()->applicationName()));
             msgBox.setStandardButtons(QMessageBox::Ok);
             msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.exec();
+            msgBox.exec();//回车，或者点ok之后，退出
             _exit(0);
         }
 
         // Determine if we have the correct permissions to access USB serial devices
+        //确定我们是否有访问USB串行设备的正确权限
         QFile permFile("/etc/group");
+//        QFile permFile("/mnt");
         if(permFile.open(QIODevice::ReadOnly)) {
             while(!permFile.atEnd()) {
                 QString line = permFile.readLine();
@@ -236,10 +243,10 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
 #endif
 
     // Parse command line options
-
-    bool fClearSettingsOptions = false; // Clear stored settings
-    bool fClearCache = false;           // Clear parameter/airframe caches
-    bool logging = false;               // Turn on logging
+    //解析命令行选项
+    bool fClearSettingsOptions = false; // Clear stored settings 明确存储设置
+    bool fClearCache = false;           // Clear parameter/airframe caches 明确参数/机身缓存
+    bool logging = false;               // Turn on logging Turn on logging
     QString loggingOptions;
 
     CmdLineOpt_t rgCmdLineOptions[] = {
@@ -282,24 +289,26 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     }
 #endif
     // The setting will delete all settings on this boot
+    //该设置将删除此引导上的所有设置
     fClearSettingsOptions |= settings.contains(_deleteAllSettingsKey);
 
     if (_runningUnitTests) {
-        // Unit tests run with clean settings
+        // Unit tests run with clean settings 单元测试使用干净的设置运行
         fClearSettingsOptions = true;
     }
 
     if (fClearSettingsOptions) {
-        // User requested settings to be cleared on command line
+        // User requested settings to be cleared on command line 用户要求在命令行上清除设置
         settings.clear();
 
-        // Clear parameter cache
+        // Clear parameter cache 明确参数缓存
         QDir paramDir(ParameterManager::parameterCacheDir());
         paramDir.removeRecursively();
         paramDir.mkpath(paramDir.absolutePath());
     } else {
         // Determine if upgrade message for settings version bump is required. Check and clear must happen before toolbox is started since
         // that will write some settings.
+        //确定是否需要设置版本bump的升级消息。必须在工具箱启动之前进行检查和清除将写入一些设置。
         if (settings.contains(_settingsVersionKey)) {
             if (settings.value(_settingsVersionKey).toInt() != QGC_SETTINGS_VERSION) {
                 settings.clear();
@@ -307,6 +316,7 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
             }
         } else if (settings.allKeys().count()) {
             // Settings version key is missing and there are settings. This is an upgrade scenario.
+            //设置版本键缺失，但有设置。这是一个升级场景。
             settings.clear();
             _settingsUpgraded = true;
         }
@@ -323,9 +333,11 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     }
 
     // Set up our logging filters
+    //设置我们的日志过滤器
     QGCLoggingCategoryRegister::instance()->setFilterRulesFromSettings(loggingOptions);
 
     // Initialize Bluetooth
+    //初始化蓝牙
 #ifdef QGC_ENABLE_BLUETOOTH
     QBluetoothLocalDevice localDevice;
     if (localDevice.isValid())
@@ -334,9 +346,9 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     }
 #endif
 
-    // Gstreamer debug settings
+    // Gstreamer debug settings Gstreamer调试设置
 #if defined(__ios__) || defined(__android__)
-    // Initialize Video Streaming
+    // Initialize Video Streaming 初始化视频
     initializeVideoStreaming(argc, argv, nullptr, nullptr);
 #else
     QString savePath, gstDebugLevel;
@@ -353,12 +365,12 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     if (settings.contains(AppSettings::gstDebugLevelName)) {
         gstDebugLevel = "*:" + settings.value(AppSettings::gstDebugLevelName).toString();
     }
-    // Initialize Video Streaming
+    // Initialize Video Streaming 初始化视频
     initializeVideoStreaming(argc, argv, savePath.toUtf8().data(), gstDebugLevel.toUtf8().data());
 #endif
 
-    _toolbox = new QGCToolbox(this);
-    _toolbox->setChildToolboxes();
+    _toolbox = new QGCToolbox(this);//creat
+    _toolbox->setChildToolboxes();//set
 
 #ifndef __mobile__
     _gpsRtkFactGroup = new GPSRTKFactGroup(this);
@@ -380,6 +392,10 @@ void QGCApplication::_shutdown(void)
     // This cause problems for deleting object like settings which are in the toolbox which may have qml references. By
     // moving them here and having main.cc call this prior to deleting the app object we make sure app object is still
     // around while these things are shutting down.
+    
+    //此代码特别不在析构函数中，因为应用程序对象在析构函数中可能不可用。这将导致在删除对象时出现问题，比如在工具箱中可能有qml引用的设置。通过
+    //将它们移到这里并拥有main.cc调用这个，在删除app对象之前，我们要确保app对象仍然存在当这些东西关闭的时候。
+
 #ifndef __mobile__
     MainWindow* mainWindow = MainWindow::instance();
     if (mainWindow) {
@@ -393,9 +409,10 @@ void QGCApplication::_shutdown(void)
 QGCApplication::~QGCApplication()
 {
     // Place shutdown code in _shutdown
+    //在shutdown中放置shutdown代码
     _app = nullptr;
 }
-
+//初始化app函数
 void QGCApplication::_initCommon(void)
 {
     static const char* kRefOnly         = "Reference only";
@@ -462,6 +479,7 @@ void QGCApplication::_initCommon(void)
 #endif
 
     // Register Qml Singletons
+    //从这里注册开始
     qmlRegisterSingletonType<QGroundControlQmlGlobal>   ("QGroundControl",                          1, 0, "QGroundControl",         qgroundcontrolQmlGlobalSingletonFactory);
     qmlRegisterSingletonType<ScreenToolsController>     ("QGroundControl.ScreenToolsController",    1, 0, "ScreenToolsController",  screenToolsControllerSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("QGroundControl.ShapeFileHelper",          1, 0, "ShapeFileHelper",        shapeFileHelperSingletonFactory);

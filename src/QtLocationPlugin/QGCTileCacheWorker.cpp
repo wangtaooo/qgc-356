@@ -168,6 +168,7 @@ QGCCacheWorker::run()
                     _importSets(task);
                     break;
                 case QGCMapTask::taskTestInternet:
+                    //测试网络
                     _testInternet();
                     break;
             }
@@ -1088,6 +1089,7 @@ QGCCacheWorker::_createDB(QSqlDatabase* db, bool createDefault)
 }
 
 //-----------------------------------------------------------------------------
+//测试网络
 void
 QGCCacheWorker::_testInternet()
 {

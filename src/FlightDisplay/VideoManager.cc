@@ -47,33 +47,40 @@ VideoManager::~VideoManager()
 }
 
 //-----------------------------------------------------------------------------
+//初始化从这里开始重载设置函数
 void
 VideoManager::setToolbox(QGCToolbox *toolbox)
 {
    QGCTool::setToolbox(toolbox);
    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+    //将C++的类声明为qml中可以访问的类型:VideoManager,VideoReceiver,VideoSurface
    qmlRegisterUncreatableType<VideoManager> ("QGroundControl.VideoManager", 1, 0, "VideoManager", "Reference only");
    qmlRegisterUncreatableType<VideoReceiver>("QGroundControl",              1, 0, "VideoReceiver","Reference only");
    qmlRegisterUncreatableType<VideoSurface> ("QGroundControl",              1, 0, "VideoSurface", "Reference only");
+    //视频设置接口
    _videoSettings = toolbox->settingsManager()->videoSettings();
+   //得到视频源未处理值，并转换为字符串
    QString videoSource = _videoSettings->videoSource()->rawValue().toString();
+    //联系在一起,前面是要设置的设置参数,把视频设置参数 和 视频管理中的函数联系在一起
    connect(_videoSettings->videoSource(),   &Fact::rawValueChanged, this, &VideoManager::_videoSourceChanged);
    connect(_videoSettings->udpPort(),       &Fact::rawValueChanged, this, &VideoManager::_udpPortChanged);
    connect(_videoSettings->rtspUrl(),       &Fact::rawValueChanged, this, &VideoManager::_rtspUrlChanged);
    connect(_videoSettings->tcpUrl(),        &Fact::rawValueChanged, this, &VideoManager::_tcpUrlChanged);
    connect(_videoSettings->aspectRatio(),   &Fact::rawValueChanged, this, &VideoManager::_aspectRatioChanged);
+    //得到多机管理的实例
    MultiVehicleManager *pVehicleMgr = qgcApp()->toolbox()->multiVehicleManager();
    connect(pVehicleMgr, &MultiVehicleManager::activeVehicleChanged, this, &VideoManager::_setActiveVehicle);
 
 #if defined(QGC_GST_STREAMING)
 #ifndef QGC_DISABLE_UVC
    // If we are using a UVC camera setup the device name
+   //如果我们使用UVC相机设置设备名
    _updateUVC();
 #endif
 
     emit isGStreamerChanged();
     qCDebug(VideoManagerLog) << "New Video Source:" << videoSource;
-    _videoReceiver = toolbox->corePlugin()->createVideoReceiver(this);
+    _videoReceiver = toolbox->corePlugin()->createVideoReceiver(this);//创建视频接受实例
     _updateSettings();
     if(isGStreamer()) {
         _videoReceiver->start();
@@ -97,6 +104,7 @@ double VideoManager::aspectRatio()
 }
 
 //-----------------------------------------------------------------------------
+//视频流自动配置
 bool
 VideoManager::autoStreamConfigured()
 {
@@ -160,6 +168,7 @@ VideoManager::_tcpUrlChanged()
 }
 
 //-----------------------------------------------------------------------------
+//检查是否有视频流的函数
 bool
 VideoManager::hasVideo()
 {
@@ -181,6 +190,7 @@ VideoManager::isGStreamer()
         videoSource == VideoSettings::videoSourceRTSP ||
         videoSource == VideoSettings::videoSourceTCP ||
         videoSource == VideoSettings::videoSourceMPEGTS ||
+        videoSource == VideoSettings::videoSourceTomTest ||
         autoStreamConfigured();
 #else
     return false;
@@ -212,7 +222,8 @@ VideoManager::_updateSettings()
                     _videoReceiver->setUri(pInfo->uri());
                     break;
                 case VIDEO_STREAM_TYPE_RTPUDP:
-                    _videoReceiver->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(pInfo->uri()));
+                    //这里设置视频源的URI,端口是个变量
+                    _videoReceiver->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(pInfo->uri()));//URL中可能只有端口
                     break;
                 case VIDEO_STREAM_TYPE_MPEG_TS_H264:
                     _videoReceiver->setUri(QStringLiteral("mpegts://0.0.0.0:%1").arg(pInfo->uri()));
@@ -225,8 +236,13 @@ VideoManager::_updateSettings()
         }
     }
     QString source = _videoSettings->videoSource()->rawValue().toString();
-    if (source == VideoSettings::videoSourceUDP)
+    if (source == VideoSettings::videoSourceUDP) {
         _videoReceiver->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(_videoSettings->udpPort()->rawValue().toInt()));
+        qWarning() << "videoSourceUDP 12345";
+    }
+    else if (source == VideoSettings::videoSourceTomTest)
+    //test
+        qCDebug(VideoManagerLog) << "Tom Test";
     else if (source == VideoSettings::videoSourceMPEGTS)
         _videoReceiver->setUri(QStringLiteral("mpegts://0.0.0.0:%1").arg(_videoSettings->udpPort()->rawValue().toInt()));
     else if (source == VideoSettings::videoSourceRTSP)
@@ -237,15 +253,15 @@ VideoManager::_updateSettings()
 
 //-----------------------------------------------------------------------------
 void
-VideoManager::_restartVideo()
+VideoManager::_restartVideo()//重启视频流
 {
 #if defined(QGC_GST_STREAMING)
     qCDebug(VideoManagerLog) << "Restart video streaming";
     if(!_videoReceiver)
         return;
-    _videoReceiver->stop();
+    _videoReceiver->stop();//stop
     _updateSettings();
-    _videoReceiver->start();
+    _videoReceiver->start();//start
 #endif
 }
 
@@ -262,7 +278,7 @@ VideoManager::_setActiveVehicle(Vehicle* vehicle)
             disconnect(_activeVehicle->dynamicCameras(), &QGCCameraManager::streamChanged, this, &VideoManager::_restartVideo);
         }
     }
-    _activeVehicle = vehicle;
+    _activeVehicle = vehicle;//设置当前的机器
     if(_activeVehicle) {
         if(_activeVehicle->dynamicCameras()) {
             connect(_activeVehicle->dynamicCameras(), &QGCCameraManager::streamChanged, this, &VideoManager::_restartVideo);

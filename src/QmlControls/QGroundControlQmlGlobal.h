@@ -34,7 +34,7 @@ class TaisyncManager;
 #endif
 
 class QGCToolbox;
-
+//QGC中整个qml的管理类
 class QGroundControlQmlGlobal : public QGCTool
 {
     Q_OBJECT
@@ -219,6 +219,7 @@ private:
     QGCMapEngineManager*    _mapEngineManager       = nullptr;
     QGCPositionManager*     _qgcPositionManager     = nullptr;
     MissionCommandTree*     _missionCommandTree     = nullptr;
+    //在这里实例一个视频管理类
     VideoManager*           _videoManager           = nullptr;
     MAVLinkLogManager*      _mavlinkLogManager      = nullptr;
     QGCCorePlugin*          _corePlugin             = nullptr;

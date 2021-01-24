@@ -54,9 +54,9 @@ class QGCFileDownload;
  **/
 class QGCApplication : public
 #ifdef __mobile__
-    QGuiApplication // Native Qml based application
+    QGuiApplication // Native Qml based application 基于本地Qml的应用程序
 #else
-    QApplication    // QtWidget based application
+    QApplication    // QtWidget based application 基于QtWidget的应用
 #endif
 {
     Q_OBJECT
@@ -72,6 +72,7 @@ public:
     void clearDeleteAllSettingsNextBoot(void);
 
     /// @brief Returns true if unit tests are being run
+    ///如果正在运行单元测试，则返回true
     bool runningUnitTests(void) { return _runningUnitTests; }
 
     /// @brief Returns true if Qt debug output should be logged to a file
@@ -88,6 +89,7 @@ public:
     bool fakeMobile(void) { return _fakeMobile; }
 
     // Still working on getting rid of this and using dependency injection instead for everything
+    // 我们仍在努力摆脱这些，并使用依赖注入来代替所有的东西
     QGCToolbox* toolbox(void) { return _toolbox; }
 
     /// Do we have Bluetooth Support?
@@ -140,10 +142,11 @@ public:
 
     /// @brief Initialize the application for normal application boot. Or in other words we are not going to run
     ///         unit tests. Although public should only be called by main.
+    ///初始化应用程序以使应用程序正常启动。换句话说，我们不会运行单元测试。尽管public只能由main调用。
     bool _initForUnitTests(void);
 
     void _loadCurrentStyleSheet(void);
-
+    //自己的单例。应该由qgcApp直接引用吗
     static QGCApplication*  _app;   ///< Our own singleton. Should be reference directly by qgcApp
 
 public:
@@ -188,13 +191,14 @@ private:
     QGCFileDownload*    _currentVersionDownload;
     GPSRTKFactGroup*    _gpsRtkFactGroup;
 
-    QGCToolbox* _toolbox;
+    QGCToolbox* _toolbox;//所有的工具集
 
-    QTranslator _QGCTranslator;
+    QTranslator _QGCTranslator;//翻译
 
     bool _bluetoothAvailable;
-
+    //设置键，保持设置版本
     static const char* _settingsVersionKey;             ///< Settings key which hold settings version
+    //如果在启动时设置此设置键，所有设置将被删除
     static const char* _deleteAllSettingsKey;           ///< If this settings key is set on boot, all settings will be deleted
 
     /// Unit Test have access to creating and destroying singletons
