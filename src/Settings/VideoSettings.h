@@ -22,7 +22,10 @@ public:
 
     //设置相关的声明，利用了宏
     DEFINE_SETTINGFACT(videoSource)//视频源
-    DEFINE_SETTINGFACT(udpPort)
+    DEFINE_SETTINGFACT(udpPort)//在这里声明一个变量的Fact
+    DEFINE_SETTINGFACT(udpPort1)
+    DEFINE_SETTINGFACT(udpPort2)
+    DEFINE_SETTINGFACT(udpPort3)
     DEFINE_SETTINGFACT(tcpUrl)
     DEFINE_SETTINGFACT(rtspUrl)
     DEFINE_SETTINGFACT(aspectRatio)
@@ -44,7 +47,7 @@ public:
     Q_PROPERTY(QString  tomVideoSource          READ tomVideoSource         CONSTANT)
     Q_PROPERTY(QString  disabledVideoSource     READ disabledVideoSource      CONSTANT)
 
-    bool     streamConfigured       ();
+    bool     streamConfigured       ();//这是一个函数，属性
     QString  rtspVideoSource        () { return videoSourceRTSP; }
     QString  udpVideoSource         () { return videoSourceUDP; }
     QString  tcpVideoSource         () { return videoSourceTCP; }

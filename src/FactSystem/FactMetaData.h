@@ -24,6 +24,11 @@
 /// Holds the meta data associated with a Fact. This is kept in a separate object from the Fact itself
 /// since you may have multiple instances of the same Fact. But there is only ever one FactMetaData
 /// instance or each Fact.
+
+///保存与事实相关联的元数据。
+///
+///保存与事实相关联的元数据。它被保存在一个独立于事实本身的对象中,因为同一个事实可能有多个实例。但事实元数据只有一个实例或每个事实。
+
 class FactMetaData : public QObject
 {
     Q_OBJECT
@@ -244,7 +249,7 @@ private:
     bool            _maxIsDefaultForType;
     QVariant        _rawMin;
     bool            _minIsDefaultForType;
-    QString         _name;
+    QString         _name;//
     QString         _shortDescription;
     QString         _rawUnits;
     QString         _cookedUnits;

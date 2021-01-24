@@ -24,17 +24,19 @@ import QGroundControl.FactSystem        1.0
 import QGroundControl.FactControls      1.0
 
 /// Video streaming page for Instrument Panel PageView
+/// 视频流页面为仪表板PageView
 Item {
     width:              pageWidth
     height:             videoGrid.height + (ScreenTools.defaultFontPixelHeight * 2)
     anchors.margins:    ScreenTools.defaultFontPixelWidth * 2
     anchors.centerIn:   parent
-
+    //声明之后可以使用C++中的资源
     property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
     property bool   _communicationLost:     _activeVehicle ? _activeVehicle.connectionLost : false
     property var    _videoReceiver:         QGroundControl.videoManager.videoReceiver
     property bool   _recordingVideo:        _videoReceiver && _videoReceiver.recording
     property bool   _videoRunning:          _videoReceiver && _videoReceiver.videoRunning
+    //流配置的状态
     property bool   _streamingEnabled:      QGroundControl.settingsManager.videoSettings.streamConfigured
 
     QGCPalette { id:qgcPal; colorGroupEnabled: true }

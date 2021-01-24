@@ -22,6 +22,7 @@ DECLARE_SETTINGGROUP(FlightMap, "FlightMap")
     qmlRegisterUncreatableType<FlightMapSettings>("QGroundControl.SettingsManager", 1, 0, "FlightMapSettings", "Reference only");
 
     // Save the original version since we modify based on map provider
+    //保存原始版本，因为我们根据地图提供程序进行了修改
     _savedMapTypeStrings = _nameToMetaDataMap[mapTypeName]->enumStrings();
     _savedMapTypeValues  = _nameToMetaDataMap[mapTypeName]->enumValues();
 

@@ -37,6 +37,11 @@
         return _ ## NAME ## Fact; \
     }
 
+//前面是类名，后面是变量名
+
+//Fact.h define Fact class
+//声明函数，在定义函数名
+
 #define DECLARE_SETTINGSFACT_NO_FUNC(CLASS, NAME) \
     const char* CLASS::NAME ## Name = #NAME; \
     Fact* CLASS::NAME()
@@ -73,7 +78,7 @@ protected:
     SettingsFact*   _createSettingsFact(const QString& factName);
     bool            _visible;
     QString         _name;
-    QString         _settingsGroup;
+    QString         _settingsGroup;//设置参数的组
 
     QMap<QString, FactMetaData*> _nameToMetaDataMap;
 };

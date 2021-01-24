@@ -64,6 +64,9 @@ VideoManager::setToolbox(QGCToolbox *toolbox)
     //联系在一起,前面是要设置的设置参数,把视频设置参数 和 视频管理中的函数联系在一起
    connect(_videoSettings->videoSource(),   &Fact::rawValueChanged, this, &VideoManager::_videoSourceChanged);
    connect(_videoSettings->udpPort(),       &Fact::rawValueChanged, this, &VideoManager::_udpPortChanged);
+   connect(_videoSettings->udpPort1(),       &Fact::rawValueChanged, this, &VideoManager::_udpPortChanged1);
+   connect(_videoSettings->udpPort2(),       &Fact::rawValueChanged, this, &VideoManager::_udpPortChanged2);
+   connect(_videoSettings->udpPort3(),       &Fact::rawValueChanged, this, &VideoManager::_udpPortChanged3);
    connect(_videoSettings->rtspUrl(),       &Fact::rawValueChanged, this, &VideoManager::_rtspUrlChanged);
    connect(_videoSettings->tcpUrl(),        &Fact::rawValueChanged, this, &VideoManager::_tcpUrlChanged);
    connect(_videoSettings->aspectRatio(),   &Fact::rawValueChanged, this, &VideoManager::_aspectRatioChanged);
@@ -152,6 +155,27 @@ VideoManager::_udpPortChanged()
 {
     _restartVideo();
 }
+
+void
+VideoManager::_udpPortChanged1()
+{
+    _restartVideo();
+}
+
+
+void
+VideoManager::_udpPortChanged2()
+{
+    _restartVideo();
+}
+
+
+void
+VideoManager::_udpPortChanged3()
+{
+    _restartVideo();
+}
+
 
 //-----------------------------------------------------------------------------
 void

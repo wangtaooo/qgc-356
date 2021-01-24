@@ -88,6 +88,9 @@ signals:
 private slots:
     void _videoSourceChanged        ();
     void _udpPortChanged            ();
+    void _udpPortChanged1            ();
+    void _udpPortChanged2            ();
+    void _udpPortChanged3            ();
     void _rtspUrlChanged            ();
     void _tcpUrlChanged             ();
     void _updateUVC                 ();

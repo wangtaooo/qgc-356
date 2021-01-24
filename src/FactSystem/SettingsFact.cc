@@ -27,11 +27,12 @@ SettingsFact::SettingsFact(QString settingsGroup, FactMetaData* metaData, QObjec
 {
     QSettings settings;
 
-    if (!_settingsGroup.isEmpty()) {
+    if (!_settingsGroup.isEmpty()) {//判断设置组是否为空
         settings.beginGroup(_settingsGroup);
     }
 
     // Allow core plugin a chance to override the default value
+    //允许核心插件有机会覆盖默认值
     _visible = qgcApp()->toolbox()->corePlugin()->adjustSettingMetaData(settingsGroup, *metaData);
     setMetaData(metaData);
 
@@ -43,11 +44,12 @@ SettingsFact::SettingsFact(QString settingsGroup, FactMetaData* metaData, QObjec
         _rawValue = typedValue;
     } else {
         // Setting is not visible, force to default value always
+        // 设置不可见，强制为默认值always
         settings.setValue(_name, rawDefaultValue);
         _rawValue = rawDefaultValue;
     }
 
-    connect(this, &Fact::rawValueChanged, this, &SettingsFact::_rawValueChanged);
+    connect(this, &Fact::rawValueChanged, this, &SettingsFact::_rawValueChanged);//
 }
 
 SettingsFact::SettingsFact(const SettingsFact& other, QObject* parent)

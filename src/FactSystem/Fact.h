@@ -25,6 +25,7 @@
 class FactValueSliderListModel;
 
 /// @brief A Fact is used to hold a single value within the system.
+/// 一个事实用于在系统中保存单个值。
 class Fact : public QObject
 {
     Q_OBJECT
@@ -36,6 +37,7 @@ public:
 
     /// Creates a Fact using the name and type from metaData. Also calls QGCCorePlugin::adjustSettingsMetaData allowing
     /// custom builds to override the metadata.
+    /// 使用元数据中的名称和类型创建一个事实。也调用QGCCorePlugin::adjustSettingsMetaData允许自定义构建覆盖元数据。
     Fact(const QString& settingsGroup, FactMetaData* metaData, QObject* parent = NULL);
 
     const Fact& operator=(const Fact& other);

@@ -68,7 +68,9 @@ const QGCMapCircle& QGCMapCircle::operator=(const QGCMapCircle& other)
 
 void QGCMapCircle::_init(void)
 {
+    ////获取到映射关系
     _nameToMetaDataMap = FactMetaData::createMapFromJsonFile(QStringLiteral(":/json/QGCMapCircle.Facts.json"), this);
+    //通过常量字符串查询对应值
     _radius.setMetaData(_nameToMetaDataMap[_radiusFactName]);
 
     connect(this,       &QGCMapCircle::centerChanged,   this, &QGCMapCircle::_setDirty);

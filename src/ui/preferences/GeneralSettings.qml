@@ -748,6 +748,36 @@ QGCView {
                                 fact:                   QGroundControl.settingsManager.videoSettings.udpPort
                                 visible:                (_isUDP || _isMPEGTS) && QGroundControl.settingsManager.videoSettings.udpPort.visible
                             }
+                            //Port1
+                            QGCLabel {
+                                text:                   qsTr("UDP Port1")
+                                visible:                (_isUDP)  && QGroundControl.settingsManager.videoSettings.udpPort1.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.udpPort1
+                                visible:                (_isUDP) && QGroundControl.settingsManager.videoSettings.udpPort1.visible
+                            }
+                            //Port2
+                            QGCLabel {
+                                text:                   qsTr("UDP Port2")
+                                visible:                (_isUDP)  && QGroundControl.settingsManager.videoSettings.udpPort2.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.udpPort2
+                                visible:                (_isUDP) && QGroundControl.settingsManager.videoSettings.udpPort2.visible
+                            }
+                            //Port3
+                            QGCLabel {
+                                text:                   qsTr("UDP Port3")
+                                visible:                (_isUDP)  && QGroundControl.settingsManager.videoSettings.udpPort3.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.udpPort3
+                                visible:                (_isUDP) && QGroundControl.settingsManager.videoSettings.udpPort3.visible
+                            }
 
                             QGCLabel {
                                 text:                   qsTr("RTSP URL")

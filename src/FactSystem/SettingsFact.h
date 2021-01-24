@@ -12,13 +12,14 @@
 #include "Fact.h"
 
 /// @brief A SettingsFact is Fact which holds a QSettings value.
+//SettingsFact是保存QSettings值的Fact。
 class SettingsFact : public Fact
 {
     Q_OBJECT
     
 public:
     SettingsFact(QObject* parent = nullptr);
-    SettingsFact(QString settingsGroup, FactMetaData* metaData, QObject* parent = nullptr);
+    SettingsFact(QString settingsGroup, FactMetaData* metaData, QObject* parent = nullptr);//
     SettingsFact(const SettingsFact& other, QObject* parent = nullptr);
 
     const SettingsFact& operator=(const SettingsFact& other);
@@ -26,6 +27,7 @@ public:
     Q_PROPERTY(bool visible MEMBER _visible CONSTANT)
 
     // Must be called before any references to fact
+    //必须在引用事实之前调用吗
     void setVisible(bool visible) { _visible = visible; }
 
 private slots:

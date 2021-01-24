@@ -228,7 +228,7 @@ VideoReceiver::start()
         return;
     }
     if(!_videoSettings->streamEnabled()->rawValue().toBool() ||
-       !_videoSettings->streamConfigured()) {
+       !_videoSettings->streamConfigured()) {//启动的时候调用流配置，参数改变时 也可以调用流配置
         qCDebug(VideoReceiverLog) << "start() but not enabled/configured";
         return;
     }

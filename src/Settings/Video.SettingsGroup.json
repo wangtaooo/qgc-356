@@ -15,6 +15,30 @@
     "defaultValue":     5600
 },
 {
+    "name":             "udpPort1",
+    "shortDescription": "Video UDP Port1",
+    "longDescription":  "UDP port1 to bind to for video stream.",
+    "type":             "uint16",
+    "min":              1025,
+    "defaultValue":     5601
+},
+{
+    "name":             "udpPort2",
+    "shortDescription": "Video UDP Port2",
+    "longDescription":  "UDP port2 to bind to for video stream.",
+    "type":             "uint16",
+    "min":              1025,
+    "defaultValue":     5602
+},
+{
+    "name":             "udpPort3",
+    "shortDescription": "Video UDP Port3",
+    "longDescription":  "UDP port3 to bind to for video stream.",
+    "type":             "uint16",
+    "min":              1025,
+    "defaultValue":     5603
+},
+{
     "name":             "rtspUrl",
     "shortDescription": "Video RTSP Url",
     "longDescription":  "RTSP url address and port to bind to for video stream. Example: rtsp://192.168.42.1:554/live",

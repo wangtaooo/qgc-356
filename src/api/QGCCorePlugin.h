@@ -82,9 +82,13 @@ public:
     virtual bool overrideSettingsGroupVisibility(QString name);
 
     /// Allows the core plugin to override the setting meta data before the setting fact is created.
+    ///允许核心插件在设置事实创建之前覆盖设置元数据。
     ///     @param settingsGroup - QSettings group which contains this item
+    ///settingsGroup--包含此项的QSettings组
     ///     @param metaData - MetaData for setting fact
+    ///metaData--用于设置事实的元数据
     /// @return true: Setting should be visible in ui, false: Setting should not be shown in ui
+    ///true:设置应该在ui中可见，false:设置不应该在ui中显示
     virtual bool adjustSettingMetaData(const QString& settingsGroup, FactMetaData& metaData);
 
     /// Return the resource file which contains the brand image for for Indoor theme.

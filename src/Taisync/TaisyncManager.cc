@@ -335,6 +335,9 @@ TaisyncManager::_setVideoEnabled()
         VideoSettings* pVSettings = qgcApp()->toolbox()->settingsManager()->videoSettings();
         pVSettings->setVisible(false);
         pVSettings->udpPort()->setRawValue(5600);
+        pVSettings->udpPort1()->setRawValue(5601);
+        pVSettings->udpPort2()->setRawValue(5602);
+        pVSettings->udpPort3()->setRawValue(5603);
         //-- TODO: this AR must come from somewhere
         pVSettings->aspectRatio()->setRawValue(1024.0 / 768.0);
         pVSettings->videoSource()->setRawValue(QString(VideoSettings::videoSourceUDP));
@@ -360,6 +363,9 @@ TaisyncManager::_setVideoEnabled()
         _restoreVideoSettings(pVSettings->videoSource());
         _restoreVideoSettings(pVSettings->aspectRatio());
         _restoreVideoSettings(pVSettings->udpPort());
+        _restoreVideoSettings(pVSettings->udpPort1());
+        _restoreVideoSettings(pVSettings->udpPort2());
+        _restoreVideoSettings(pVSettings->udpPort3());
         pVSettings->setVisible(true);
     }
     _enableVideo = enable;

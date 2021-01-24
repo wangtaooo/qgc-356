@@ -19,14 +19,16 @@ SettingsGroup::SettingsGroup(const QString& name, const QString& settingsGroup, 
     , _name         (name)
     , _settingsGroup(settingsGroup)
 {
+    //读取设置参数,通过参数 获取所有设置表
     _nameToMetaDataMap = FactMetaData::createMapFromJsonFile(QString(kJsonFile).arg(name), this);
 }
 
-SettingsFact* SettingsGroup::_createSettingsFact(const QString& factName)
+///setting 的Fact成员
+SettingsFact* SettingsGroup::_createSettingsFact(const QString& factName)//传入Facte类名
 {
     FactMetaData* m = _nameToMetaDataMap[factName];
     if(!m) {
-        qCritical() << "Fact name " << factName << "not found in" << QString(kJsonFile).arg(_name);
+        qCritical() << "Fact name " << factName << "not found in" << QString(kJsonFile).arg(_name);//没查询到
         exit(-1);
     }
     return new SettingsFact(_settingsGroup, m, this);

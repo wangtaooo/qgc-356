@@ -79,12 +79,12 @@ private:
 
     bool            _dirty;
     QGeoCoordinate  _center;
-    Fact            _radius;
+    Fact            _radius;//差Json获取对应参数
     bool            _interactive;
     bool            _showRotation;
     bool            _clockwiseRotation;
 
-    QMap<QString, FactMetaData*> _nameToMetaDataMap;
+    QMap<QString, FactMetaData*> _nameToMetaDataMap;//数据到名的一种映射关系吧,init中生成的
 
     static const char* _jsonCenterKey;
     static const char* _jsonRadiusKey;

@@ -214,13 +214,15 @@ bool QGCCorePlugin::overrideSettingsGroupVisibility(QString name)
 
 bool QGCCorePlugin::adjustSettingMetaData(const QString& settingsGroup, FactMetaData& metaData)
 {
-    if (settingsGroup != AppSettings::settingsGroup) {
+    if (settingsGroup != AppSettings::settingsGroup) {//要设置的和 要调整的一样的话，直接退出
         // All changes refer to AppSettings
+        // 所有更改都参考AppSettings
         return true;
     }
 
     //-- Default Palette
-    if (metaData.name() == AppSettings::indoorPaletteName) {
+    //默认的面板
+    if (metaData.name() == AppSettings::indoorPaletteName) {//室内面板
         QVariant outdoorPalette;
 #if defined (__mobile__)
         outdoorPalette = 0;
@@ -230,6 +232,7 @@ bool QGCCorePlugin::adjustSettingMetaData(const QString& settingsGroup, FactMeta
         metaData.setRawDefaultValue(outdoorPalette);
         return true;
     //-- Auto Save Telemetry Logs
+    //自动保存遥测日志
     } else if (metaData.name() == AppSettings::telemetrySaveName) {
 #if defined (__mobile__)
         metaData.setRawDefaultValue(false);
@@ -246,7 +249,7 @@ bool QGCCorePlugin::adjustSettingMetaData(const QString& settingsGroup, FactMeta
         return false;
 #endif
     }
-    return true; // Show setting in ui
+    return true; // Show setting in ui 在ui中显示设置
 }
 
 void QGCCorePlugin::setShowTouchAreas(bool show)
